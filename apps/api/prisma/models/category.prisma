@@ -1,0 +1,13 @@
+model Category {
+  id         String   @id @default(uuid())
+  project_id String
+  name       String
+  is_default Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project   Project    @relation(fields: [project_id], references: [id])
+  feedbacks Feedback[]
+
+  @@map("categories")
+}

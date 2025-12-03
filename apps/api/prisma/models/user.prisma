@@ -1,1 +1,11 @@
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  name            String
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+  projects        Project[]
+  project_members Member[]
 
+  @@map("users")
+}
