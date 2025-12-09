@@ -4,6 +4,9 @@ node_modules
 # Build outputs
 dist
 
+# Generated Prisma client
+apps/api/generated
+
 # Turbo
 .turbo
 
