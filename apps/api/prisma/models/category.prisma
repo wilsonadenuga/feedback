@@ -1,4 +1,3 @@
-// Feedback categories within projects
 model Category {
   id         String   @id @default(uuid())
   project_id String

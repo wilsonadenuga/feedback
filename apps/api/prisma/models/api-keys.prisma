@@ -1,4 +1,3 @@
-// API keys for external integrations (long-term access)
 model ApiKey {
   id         String   @id @default(uuid())
   name       String
