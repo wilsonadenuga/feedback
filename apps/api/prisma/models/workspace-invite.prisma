@@ -1,0 +1,17 @@
+model WorkspaceInvite {
+  id           String   @id @default(uuid())
+  workspace_id String
+  email        String
+  role         String
+  invited_by   String
+  status       String
+  token_id     String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspace_id], references: [id])
+  token     Token     @relation(fields: [token_id], references: [id])
+
+  @@unique([workspace_id, email])
+  @@map("workspace_invites")
+}

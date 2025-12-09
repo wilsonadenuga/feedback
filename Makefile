@@ -1,4 +1,4 @@
-.PHONY: help install dev build test lint clean prisma-generate prisma-migrate prisma-studio git-setup
+.PHONY: help install dev build test lint clean prisma-generate prisma-migrate prisma-studio prisma-format
 
 # Default target
 help:
@@ -12,6 +12,7 @@ help:
 	@echo "  make prisma-generate - Generate Prisma client"
 	@echo "  make prisma-migrate  - Run Prisma migrations"
 	@echo "  make prisma-studio   - Open Prisma Studio"
+	@echo "  make prisma-format   - Format Prisma schema"
 
 # Install dependencies
 install:
@@ -50,3 +51,6 @@ prisma-migrate:
 
 prisma-studio:
 	cd apps/api && pnpm prisma:studio
+
+prisma-format:
+	cd apps/api && pnpm prisma format

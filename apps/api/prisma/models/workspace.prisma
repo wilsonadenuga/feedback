@@ -1,0 +1,15 @@
+model Workspace {
+  id            String   @id @default(uuid())
+  name          String
+  owner_user_id String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  logo_url      String?
+
+  owner    User              @relation(fields: [owner_user_id], references: [id])
+  projects Project[]
+  members  WorkspaceMember[]
+  invites  WorkspaceInvite[]
+
+  @@map("workspaces")
+}

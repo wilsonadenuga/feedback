@@ -1,3 +1,4 @@
+// Feedback categories within projects
 model Category {
   id         String   @id @default(uuid())
   project_id String
@@ -9,5 +10,7 @@ model Category {
   project   Project    @relation(fields: [project_id], references: [id])
   feedbacks Feedback[]
 
+  @@unique([project_id, name])
+  @@index([project_id])
   @@map("categories")
 }

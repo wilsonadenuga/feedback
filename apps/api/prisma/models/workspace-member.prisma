@@ -1,0 +1,17 @@
+model WorkspaceMember {
+  id           String   @id @default(uuid())
+  workspace_id String
+  user_id      String
+  role         String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  display_name String?
+  title        String?
+  avatar_url   String?
+
+  workspace Workspace @relation(fields: [workspace_id], references: [id])
+  user      User      @relation(fields: [user_id], references: [id])
+
+  @@unique([workspace_id, user_id])
+  @@map("workspace_members")
+}
