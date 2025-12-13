@@ -3,7 +3,7 @@ import { userSchema } from '../user';
 import { authTokensSchema } from './shared.schema';
 
 // TODO: we will accept the token from the headers also, this will help with resend verification email,
-export const verifyEmailSchema = z.object({
+export const confirmEmailSchema = z.object({
   email: z.email('Invalid email address').toLowerCase().trim(),
   code: z
     .string()
@@ -12,10 +12,10 @@ export const verifyEmailSchema = z.object({
 });
 
 
-export const verifyEmailResponseSchema = z.object({
+export const confirmEmailResponseSchema = z.object({
   user: userSchema,
   tokens: authTokensSchema,
 });
 
-export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
-export type VerifyEmailResponse = z.infer<typeof verifyEmailResponseSchema>;
+export type ConfirmEmailInput = z.infer<typeof confirmEmailSchema>;
+export type ConfirmEmailResponse = z.infer<typeof confirmEmailResponseSchema>;

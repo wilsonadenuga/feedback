@@ -4,11 +4,13 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { UserService } from '../../user/services/user.service';
-import { RegisterDto, VerifyEmailDto } from '../dto';
-import type { RegisterResponse, VerifyEmailResponse } from '@feedback/schema';
+import { RegisterDto, ConfirmEmailDto } from '../dto';
+import type { RegisterResponse, ConfirmEmailResponse } from '@feedback/schema';
 import * as crypto from 'crypto';
+import { UserRegisteredEvent } from '../events/user-registered.event';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   private generateCode(): string {
@@ -32,6 +35,8 @@ export class AuthService {
       throw new ConflictException('User with this email already exists');
     }
 
+    await this.userService.createUser(name, email);
+
     const code = this.generateCode();
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + this.CODE_EXPIRY_MINUTES);
@@ -44,7 +49,7 @@ export class AuthService {
       },
     });
 
-    await this.prisma.token.create({
+    const token = await this.prisma.token.create({
       data: {
         type: 'registration_code',
         value: `${name}:${email}:${code}`,
@@ -52,16 +57,18 @@ export class AuthService {
       },
     });
 
-    // TODO: Send email with code
-    console.log(`Verification code for ${email}: ${code}`);
+    this.eventEmitter.emit(
+      'user.registered',
+      new UserRegisteredEvent(token.id, email, code),
+    );
 
     return {
       message: 'Verification code sent to your email',
-      expires_in: this.CODE_EXPIRY_MINUTES * 60, // in seconds
+      expires_in: this.CODE_EXPIRY_MINUTES * 60,
     };
   }
 
-  async verifyCode(dto: VerifyEmailDto): Promise<VerifyEmailResponse> {
+  async verifyCode(dto: ConfirmEmailDto): Promise<ConfirmEmailResponse> {
     const { email, code } = dto;
 
     const token = await this.prisma.token.findFirst({
@@ -133,7 +140,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      expiresIn: 15 * 60, // 15 minutes in seconds
+      expiresIn: 15 * 60,
     };
   }
 }

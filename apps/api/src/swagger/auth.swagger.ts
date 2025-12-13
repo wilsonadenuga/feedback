@@ -1,6 +1,6 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
-import { RegisterResponseDto, VerifyEmailResponseDto } from 'modules/auth/dto';
+import { RegisterResponseDto, ConfirmEmailResponseDto } from 'modules/auth/dto';
 
 export class AuthSwagger {
   static register() {
@@ -26,7 +26,7 @@ export class AuthSwagger {
       }),
       ApiOkResponse({
         description: 'Email verified and user logged in',
-        type: VerifyEmailResponseDto,
+        type: ConfirmEmailResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,

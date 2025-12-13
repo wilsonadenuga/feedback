@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
-import { RegisterDto, VerifyEmailDto } from '../dto';
+import { RegisterDto, ConfirmEmailDto } from '../dto';
 import { AuthSwagger } from '../../../swagger/auth.swagger';
 
 @ApiTags('auth')
@@ -16,10 +16,10 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
-  @Post('verify-email')
+  @Post('confirm-email')
   @HttpCode(HttpStatus.OK)
   @AuthSwagger.verifyEmail()
-  async verifyEmail(@Body() dto: VerifyEmailDto) {
+  async verifyEmail(@Body() dto: ConfirmEmailDto) {
     return this.authService.verifyCode(dto);
   }
 }
