@@ -19,10 +19,13 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@feedback/email-templates": "workspace:^",
     "@feedback/schema": "workspace:^",
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.0.14",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.14",
+    "@nestjs/event-emitter": "^3.0.1",
     "@nestjs/jwt": "11.0.2",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "11.0.5",
@@ -31,7 +34,9 @@
     "@prisma/adapter-pg": "^7.0.1",
     "@prisma/client": "^7.0.1",
     "@prisma/client-runtime-utils": "^7.0.0",
+    "@react-email/components": "^1.0.0",
     "@types/passport-jwt": "4.0.1",
+    "bullmq": "^5.66.0",
     "helmet": "8.1.0",
     "nestjs-pino": "4.5.0",
     "nestjs-zod": "5.0.1",
@@ -40,6 +45,7 @@
     "pg": "^8.13.3",
     "pino-http": "11.0.0",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.6.0",
     "rxjs": "^7.8.1",
     "zod": "catalog:"
   },
