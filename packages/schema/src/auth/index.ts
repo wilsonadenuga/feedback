@@ -1,3 +1,3 @@
-export * from './shared';
-export * from './register';
+export * from './shared.schema';
+export * from './register.schema';
 export * from './verify-email';

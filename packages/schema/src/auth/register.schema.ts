@@ -9,7 +9,7 @@ export const registerSchema = z.object({
 
 export const registerResponseSchema = z.object({
   message: z.string(),
-  expiresIn: z.number().int().positive(), // seconds until code expires
+  expires_in: z.number().int().positive(), // seconds until code expires
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

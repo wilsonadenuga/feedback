@@ -57,7 +57,7 @@ export class AuthService {
 
     return {
       message: 'Verification code sent to your email',
-      expiresIn: this.CODE_EXPIRY_MINUTES * 60, // in seconds
+      expires_in: this.CODE_EXPIRY_MINUTES * 60, // in seconds
     };
   }
 
@@ -103,8 +103,8 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        created_at: user.created_at,
-        updated_at: user.updated_at,
+        created_at: user.created_at.toISOString(),
+        updated_at: user.updated_at.toISOString(),
       },
       tokens,
     };

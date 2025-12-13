@@ -1,4 +1,7 @@
 import { createZodDto } from 'nestjs-zod';
-import { verifyEmailSchema } from '@feedback/schema';
+import { verifyEmailSchema, verifyEmailResponseSchema } from '@feedback/schema';
 
 export class VerifyEmailDto extends createZodDto(verifyEmailSchema) {}
+export class VerifyEmailResponseDto extends createZodDto(
+  verifyEmailResponseSchema,
+) {}
