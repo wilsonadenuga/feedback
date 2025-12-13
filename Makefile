@@ -1,4 +1,4 @@
-.PHONY: help install dev build test lint clean prisma-generate prisma-migrate prisma-studio prisma-format
+.PHONY: help install dev build test lint clean prisma-generate prisma-migrate prisma-studio prisma-format resource
 
 # Default target
 help:
@@ -13,6 +13,7 @@ help:
 	@echo "  make prisma-migrate  - Run Prisma migrations"
 	@echo "  make prisma-studio   - Open Prisma Studio"
 	@echo "  make prisma-format   - Format Prisma schema"
+	@echo "  make resource name=<name> - Generate NestJS CRUD resource"
 
 # Install dependencies
 install:
@@ -54,3 +55,11 @@ prisma-studio:
 
 prisma-format:
 	cd apps/api && pnpm prisma format
+
+# Generate NestJS CRUD resource
+resource:
+	@if [ -z "$(name)" ]; then \
+		echo "Error: Please provide a resource name using 'make resource name=<name>'"; \
+		exit 1; \
+	fi
+	cd apps/api && pnpm nest g resource $(name) --no-spec
