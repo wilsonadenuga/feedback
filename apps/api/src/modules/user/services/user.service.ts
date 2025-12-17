@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { UserStatusType } from '@feedback/schema';
 import { UserRepository } from '../user.repository';
 
 @Injectable()
@@ -14,5 +15,9 @@ export class UserService {
       name,
       email,
     });
+  }
+
+  async updateUserStatus(userId: string, status: UserStatusType) {
+    return this.userRepository.updateUser(userId, { status: status });
   }
 }

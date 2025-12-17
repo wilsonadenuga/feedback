@@ -2,6 +2,7 @@ model User {
   id         String   @id @default(uuid())
   email      String   @unique
   name       String
+  status     String   @default("UNVERIFIED")
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 

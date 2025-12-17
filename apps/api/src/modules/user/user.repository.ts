@@ -17,4 +17,11 @@ export class UserRepository {
       data,
     });
   }
+
+  async updateUser(id: string, data: Omit<Prisma.UserUpdateInput, 'id'>) {
+    return this.prisma.user.update({
+      where: { id },
+      data,
+    });
+  }
 }

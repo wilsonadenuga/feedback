@@ -2,13 +2,21 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  Inject,
 } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { UserService } from '../../user/services/user.service';
-import { RegisterDto, ConfirmEmailDto } from '../dto';
-import type { RegisterResponse, ConfirmEmailResponse } from '@feedback/schema';
+import { RegisterDto, ConfirmEmailDto, ResendVerificationDto } from '../dto';
+import type {
+  RegisterResponse,
+  ConfirmEmailResponse,
+  ResendVerificationResponse,
+} from '@feedback/schema';
+import { UserStatus } from '@feedback/schema';
 import * as crypto from 'crypto';
 import { UserRegisteredEvent } from '../events/user-registered.event';
 
@@ -21,10 +29,31 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly eventEmitter: EventEmitter2,
+    @Inject(CACHE_MANAGER) private readonly cache: Cache,
   ) {}
 
   private generateCode(): string {
     return crypto.randomInt(100000, 999999).toString();
+  }
+
+  private async sendVerificationCode(
+    userId: string,
+    email: string,
+  ): Promise<{ message: string; expires_in: number }> {
+    const code = this.generateCode();
+    const ttlMs = this.CODE_EXPIRY_MINUTES * 60 * 1000;
+
+    await this.cache.set(`otp:email_verification:${userId}`, code, ttlMs);
+
+    this.eventEmitter.emit(
+      'user.registered',
+      new UserRegisteredEvent(email, code),
+    );
+
+    return {
+      message: 'Verification code sent to your email',
+      expires_in: this.CODE_EXPIRY_MINUTES * 60,
+    };
   }
 
   async register(dto: RegisterDto): Promise<RegisterResponse> {
@@ -35,74 +64,37 @@ export class AuthService {
       throw new ConflictException('User with this email already exists');
     }
 
-    await this.userService.createUser(name, email);
+    const user = await this.userService.createUser(name, email);
 
-    const code = this.generateCode();
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + this.CODE_EXPIRY_MINUTES);
-
-    await this.prisma.token.deleteMany({
-      where: {
-        type: 'registration_code',
-        user: null,
-        used_at: null,
-      },
-    });
-
-    const token = await this.prisma.token.create({
-      data: {
-        type: 'registration_code',
-        value: `${name}:${email}:${code}`,
-        expires_at: expiresAt,
-      },
-    });
-
-    this.eventEmitter.emit(
-      'user.registered',
-      new UserRegisteredEvent(token.id, email, code),
-    );
-
-    return {
-      message: 'Verification code sent to your email',
-      expires_in: this.CODE_EXPIRY_MINUTES * 60,
-    };
+    return this.sendVerificationCode(user.id, email);
   }
 
   async verifyCode(dto: ConfirmEmailDto): Promise<ConfirmEmailResponse> {
     const { email, code } = dto;
+    const user = await this.userService.findUserByEmail(email);
 
-    const token = await this.prisma.token.findFirst({
-      where: {
-        type: 'registration_code',
-        used_at: null,
-      },
-    });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
 
-    if (!token) {
+    if (user.status !== UserStatus.UNVERIFIED) {
+      throw new ConflictException('Email already verified');
+    }
+
+    const storedCode = await this.cache.get<string>(
+      `otp:email_verification:${user.id}`,
+    );
+
+    if (!storedCode) {
       throw new UnauthorizedException('Invalid or expired verification code');
     }
 
-    const [storedName, storedEmail, storedCode] = token.value.split(':');
-
-    if (storedEmail !== email || storedCode !== code) {
+    if (storedCode !== code) {
       throw new UnauthorizedException('Invalid or expired verification code');
     }
 
-    if (new Date() > token.expires_at) {
-      await this.prisma.token.delete({ where: { id: token.id } });
-      throw new UnauthorizedException('Verification code has expired');
-    }
-
-    const user = await this.userService.createUser(storedName, storedEmail);
-
-    await this.prisma.token.update({
-      where: { id: token.id },
-      data: {
-        used_at: new Date(),
-        user_id: user.id,
-      },
-    });
-
+    await this.cache.del(`otp:email_verification:${user.id}`);
+    await this.userService.updateUserStatus(user.id, UserStatus.ACTIVE);
     const tokens = await this.generateTokens(user.id, user.email);
 
     return {
@@ -110,11 +102,32 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
+        status: UserStatus.ACTIVE,
         created_at: user.created_at.toISOString(),
         updated_at: user.updated_at.toISOString(),
       },
       tokens,
     };
+  }
+
+  async resendVerification(
+    dto: ResendVerificationDto,
+  ): Promise<ResendVerificationResponse> {
+    const { email } = dto;
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      return {
+        message: 'If an account exists, verification code has been sent',
+        expires_in: this.CODE_EXPIRY_MINUTES * 60,
+      };
+    }
+
+    if (user.status === UserStatus.ACTIVE) {
+      throw new ConflictException('Email already verified');
+    }
+
+    return this.sendVerificationCode(user.id, email);
   }
 
   private async generateTokens(userId: string, email: string) {

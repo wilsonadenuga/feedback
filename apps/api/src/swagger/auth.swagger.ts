@@ -1,6 +1,10 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
-import { RegisterResponseDto, ConfirmEmailResponseDto } from 'modules/auth/dto';
+import {
+  RegisterResponseDto,
+  ConfirmEmailResponseDto,
+  ResendVerificationResponseDto,
+} from 'modules/auth/dto';
 
 export class AuthSwagger {
   static register() {
@@ -31,6 +35,22 @@ export class AuthSwagger {
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
         description: 'Invalid or expired code',
+      }),
+    );
+  }
+
+  static resendVerification() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Resend verification code to email',
+      }),
+      ApiOkResponse({
+        description: 'Verification code sent successfully',
+        type: ResendVerificationResponseDto,
+      }),
+      ApiResponse({
+        status: HttpStatus.CONFLICT,
+        description: 'Email already verified',
       }),
     );
   }
