@@ -27,7 +27,7 @@ export class UserRegisteredEventListener {
         'send-email',
         {
           to: event.email,
-          subject: 'Verify your email address',
+          subject: 'Confirm your email address',
           html,
         },
         {
