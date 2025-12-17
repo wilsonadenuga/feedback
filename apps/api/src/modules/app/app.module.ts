@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CacheModule } from '@nestjs/cache-manager';
+import KeyvRedis from '@keyv/redis';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from '../../prisma/prisma.module';
@@ -30,6 +32,15 @@ import appConfig from '../../config/app.config';
           url: configService.get<string>('redis.url'),
         },
       }),
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          stores: [new KeyvRedis(configService.get<string>('redis.url'))],
+        };
+      },
     }),
     PrismaModule,
     AuthModule,
