@@ -23,7 +23,7 @@ export class AuthController {
     return this.authService.verifyCode(dto);
   }
 
-  @Post('resend-verification')
+  @Post('resend-verification-email')
   @HttpCode(HttpStatus.OK)
   @AuthSwagger.resendVerification()
   async resendVerification(@Body() dto: ResendVerificationDto) {
