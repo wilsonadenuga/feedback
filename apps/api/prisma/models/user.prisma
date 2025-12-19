@@ -8,6 +8,7 @@ model User {
 
   workspaces        Workspace[]
   workspace_members WorkspaceMember[]
+  workspace_invites WorkspaceInvite[]
   tokens            Token[]
 
   @@map("users")

@@ -1,16 +1,22 @@
 model Feedback {
-  id          String   @id @default(uuid())
-  project_id  String
-  category_id String
-  title       String
-  description String?
-  status      String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id             String   @id @default(uuid())
+  project_id     String
+  category_id    String?
+  title          String
+  description    String?
+  status         String   @default("OPEN")
+  customer_id    String?
+  customer_email String?
+  customer_name  String?
+  customer_meta  Json?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
-  project              Project              @relation(fields: [project_id], references: [id])
-  category             Category             @relation(fields: [category_id], references: [id])
-  feedback_submissions FeedbackSubmission[]
+  project  Project   @relation(fields: [project_id], references: [id])
+  category Category? @relation(fields: [category_id], references: [id])
 
+  @@index([project_id])
+  @@index([category_id])
+  @@index([status])
   @@map("feedbacks")
 }
