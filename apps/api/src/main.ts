@@ -10,11 +10,18 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get('app.port');
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: ['/'],
+  });
 
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
+  });
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
   });
 
   app.useGlobalPipes(new ZodValidationPipe());
