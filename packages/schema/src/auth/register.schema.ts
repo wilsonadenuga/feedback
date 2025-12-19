@@ -8,7 +8,6 @@ export const registerSchema = z.object({
 });
 
 export const registerResponseSchema = z.object({
-  message: z.string(),
   expires_in: z.number().int().positive(), // seconds until code expires
 });
 

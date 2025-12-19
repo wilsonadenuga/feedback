@@ -4,6 +4,7 @@ import { AppModule } from './modules/app/app.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { ResponseInterceptor, HttpExceptionFilter } from './common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,6 +26,8 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ZodValidationPipe());
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Feedback API')

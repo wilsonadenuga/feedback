@@ -39,7 +39,7 @@ export class AuthService {
   private async sendVerificationCode(
     userId: string,
     email: string,
-  ): Promise<{ message: string; expires_in: number }> {
+  ): Promise<{ expires_in: number }> {
     const code = this.generateCode();
     const ttlMs = this.CODE_EXPIRY_MINUTES * 60 * 1000;
 
@@ -51,7 +51,6 @@ export class AuthService {
     );
 
     return {
-      message: 'Verification code sent to your email',
       expires_in: this.CODE_EXPIRY_MINUTES * 60,
     };
   }
@@ -118,7 +117,6 @@ export class AuthService {
 
     if (!user) {
       return {
-        message: 'If an account exists, verification code has been sent',
         expires_in: this.CODE_EXPIRY_MINUTES * 60,
       };
     }

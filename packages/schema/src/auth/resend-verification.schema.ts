@@ -5,7 +5,6 @@ export const resendVerificationSchema = z.object({
 });
 
 export const resendVerificationResponseSchema = z.object({
-  message: z.string(),
   expires_in: z.number().int().positive(),
 });
 
