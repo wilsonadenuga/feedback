@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
+import { WORKSPACE_ROLES } from '@feedback/schema';
 
 @Injectable()
 export class WorkspaceRepository {
@@ -11,7 +12,17 @@ export class WorkspaceRepository {
       data: {
         name: data.name,
         logo_url: data.logo_url,
-        owner_user_id: ownerId,
+        owner: {
+          connect: {
+            id: ownerId,
+          },
+        },
+        members: {
+          create: {
+            user_id: ownerId,
+            role: WORKSPACE_ROLES.ADMIN,
+          },
+        },
       },
     });
   }
@@ -22,7 +33,17 @@ export class WorkspaceRepository {
       include: {
         members: {
           select: {
-            user_id: true,
+            id: true,
+            role: true,
+            display_name: true,
+            created_at: true,
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+              },
+            },
           },
         },
       },
@@ -32,10 +53,7 @@ export class WorkspaceRepository {
   async findByUserId(userId: string) {
     return this.prisma.workspace.findMany({
       where: {
-        OR: [
-          { owner_user_id: userId },
-          { members: { some: { user_id: userId } } },
-        ],
+        members: { some: { user_id: userId } },
       },
       orderBy: { created_at: 'desc' },
     });
@@ -51,6 +69,21 @@ export class WorkspaceRepository {
   async delete(id: string) {
     return this.prisma.workspace.delete({
       where: { id },
+    });
+  }
+
+  async findMemberByUserAndWorkspace(userId: string, workspaceId: string) {
+    return this.prisma.workspaceMember.findFirst({
+      where: {
+        user_id: userId,
+        workspace_id: workspaceId,
+      },
+      select: {
+        id: true,
+        role: true,
+        workspace_id: true,
+        user_id: true,
+      },
     });
   }
 }

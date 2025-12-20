@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { uuidSchema } from '../common';
+import { workspaceRoleSchema } from './role.schema';
 
 export const addWorkspaceMemberSchema = z.object({
   user_id: uuidSchema,
-  role: z.string().min(1, 'Role is required'),
+  role: workspaceRoleSchema,
   display_name: z.string().optional(),
 });
 

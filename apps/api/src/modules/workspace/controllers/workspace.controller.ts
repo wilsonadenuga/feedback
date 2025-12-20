@@ -12,18 +12,21 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { WorkspaceService } from '../services/workspace.service';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { WorkspaceGuard } from '../guards';
 import { ResponseHelper, GetCurrentUser } from '../../../common';
+import { WorkspaceSwagger } from '../../../swagger/workspace.swagger';
 
 @ApiTags('workspaces')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('workspaces')
 export class WorkspaceController {
   constructor(private readonly workspaceService: WorkspaceService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @WorkspaceSwagger.create()
   async create(
-    @GetCurrentUser('sub') userId: string,
+    @GetCurrentUser('id') userId: string,
     @Body() dto: CreateWorkspaceDto,
   ) {
     const workspace = await this.workspaceService.create(userId, dto);
@@ -31,26 +34,40 @@ export class WorkspaceController {
   }
 
   @Get()
-  async findAll(@GetCurrentUser('sub') userId: string) {
+  @UseGuards(JwtAuthGuard)
+  @WorkspaceSwagger.findAll()
+  async findAll(@GetCurrentUser('id') userId: string) {
     const workspaces = await this.workspaceService.findAll(userId);
-    return ResponseHelper.success(workspaces);
+    return ResponseHelper.success(
+      workspaces,
+      'Workspaces retrieved successfully',
+    );
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const workspace = await this.workspaceService.findOne(id);
+  @Get(':workspace_id')
+  @UseGuards(JwtAuthGuard, WorkspaceGuard)
+  @WorkspaceSwagger.findOne()
+  async findOne(@Param('workspace_id') workspaceId: string) {
+    const workspace = await this.workspaceService.findOne(workspaceId);
     return ResponseHelper.success(workspace);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateWorkspaceDto) {
-    const workspace = await this.workspaceService.update(id, dto);
+  @Put(':workspace_id')
+  @UseGuards(JwtAuthGuard, WorkspaceGuard)
+  @WorkspaceSwagger.update()
+  async update(
+    @Param('workspace_id') workspaceId: string,
+    @Body() dto: UpdateWorkspaceDto,
+  ) {
+    const workspace = await this.workspaceService.update(workspaceId, dto);
     return ResponseHelper.success(workspace, 'Workspace updated successfully');
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    await this.workspaceService.delete(id);
+  @Delete(':workspace_id')
+  @UseGuards(JwtAuthGuard, WorkspaceGuard)
+  @WorkspaceSwagger.delete()
+  async delete(@Param('workspace_id') workspaceId: string) {
+    await this.workspaceService.delete(workspaceId);
     return ResponseHelper.success(null, 'Workspace deleted successfully');
   }
 }

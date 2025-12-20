@@ -1,23 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { WorkspaceRepository } from '../repositories/workspace.repository';
-import { WorkspaceMemberService } from './workspace-member.service';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
 
 @Injectable()
 export class WorkspaceService {
-  constructor(
-    private readonly workspaceRepository: WorkspaceRepository,
-    private readonly workspaceMemberService: WorkspaceMemberService,
-  ) {}
+  constructor(private readonly workspaceRepository: WorkspaceRepository) {}
 
   async create(userId: string, data: CreateWorkspaceDto) {
-    const workspace = await this.workspaceRepository.create(userId, data);
-    await this.workspaceMemberService.create(workspace.id, {
-      user_id: userId,
-      role: 'owner',
-    });
-
-    return workspace;
+    return this.workspaceRepository.create(userId, data);
   }
 
   async findAll(userId: string) {

@@ -4,6 +4,7 @@ import { WorkspaceService } from './services/workspace.service';
 import { WorkspaceMemberService } from './services/workspace-member.service';
 import { WorkspaceRepository } from './repositories/workspace.repository';
 import { WorkspaceMemberRepository } from './repositories/workspace-member.repository';
+import { WorkspaceGuard } from './guards';
 import { PrismaModule } from '../../prisma/prisma.module';
 
 @Module({
@@ -14,12 +15,14 @@ import { PrismaModule } from '../../prisma/prisma.module';
     WorkspaceMemberService,
     WorkspaceRepository,
     WorkspaceMemberRepository,
+    WorkspaceGuard,
   ],
   exports: [
     WorkspaceService,
     WorkspaceMemberService,
     WorkspaceRepository,
     WorkspaceMemberRepository,
+    WorkspaceGuard,
   ],
 })
 export class WorkspaceModule {}
