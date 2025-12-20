@@ -10,15 +10,18 @@ import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { UserService } from '../../user/services/user.service';
-import { RegisterDto, ConfirmEmailDto, ResendVerificationDto } from '../dto';
-import type {
-  RegisterResponse,
-  ConfirmEmailResponse,
-  ResendVerificationResponse,
-} from '@feedback/schema';
+import { WorkspaceService } from '../../workspace/services/workspace.service';
+import {
+  RegisterDto,
+  ConfirmEmailDto,
+  ResendVerificationDto,
+  LoginRequestDto,
+  LoginVerifyDto,
+} from '../dto';
 import { UserStatus } from '@feedback/schema';
 import * as crypto from 'crypto';
 import { UserRegisteredEvent } from '../events/user-registered.event';
+import { UserLoginCodeEvent } from '../events/user-login-code.event';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +31,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly workspaceService: WorkspaceService,
     private readonly eventEmitter: EventEmitter2,
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
   ) {}
@@ -55,7 +59,7 @@ export class AuthService {
     };
   }
 
-  async register(dto: RegisterDto): Promise<RegisterResponse> {
+  async register(dto: RegisterDto) {
     const { name, email } = dto;
     const existingUser = await this.userService.findUserByEmail(email);
 
@@ -68,7 +72,7 @@ export class AuthService {
     return this.sendVerificationCode(user.id, email);
   }
 
-  async verifyCode(dto: ConfirmEmailDto): Promise<ConfirmEmailResponse> {
+  async verifyCode(dto: ConfirmEmailDto) {
     const { email, code } = dto;
     const user = await this.userService.findUserByEmail(email);
 
@@ -109,9 +113,7 @@ export class AuthService {
     };
   }
 
-  async resendVerification(
-    dto: ResendVerificationDto,
-  ): Promise<ResendVerificationResponse> {
+  async resendVerification(dto: ResendVerificationDto) {
     const { email } = dto;
     const user = await this.userService.findUserByEmail(email);
 
@@ -139,6 +141,7 @@ export class AuthService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
 
+    // TODO: use token service instead
     await this.prisma.token.create({
       data: {
         type: 'refresh_token',
@@ -152,6 +155,75 @@ export class AuthService {
       accessToken,
       refreshToken,
       expiresIn: 15 * 60,
+    };
+  }
+
+  async loginRequest(dto: LoginRequestDto) {
+    const { email } = dto;
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      return {
+        expires_in: this.CODE_EXPIRY_MINUTES * 60,
+      };
+    }
+
+    if (user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException('Please verify your email first');
+    }
+
+    const code = this.generateCode();
+    const ttlMs = this.CODE_EXPIRY_MINUTES * 60 * 1000;
+
+    await this.cache.set(`otp:login:${user.id}`, code, ttlMs);
+
+    this.eventEmitter.emit(
+      'user.login.code',
+      new UserLoginCodeEvent(user.email, code),
+    );
+
+    return {
+      expires_in: this.CODE_EXPIRY_MINUTES * 60,
+    };
+  }
+
+  async loginVerify(dto: LoginVerifyDto) {
+    const { email, code } = dto;
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or code');
+    }
+
+    if (user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException('Please verify your email first');
+    }
+
+    const storedCode = await this.cache.get<string>(`otp:login:${user.id}`);
+
+    if (!storedCode) {
+      throw new UnauthorizedException('Invalid or expired code');
+    }
+
+    if (storedCode !== code) {
+      throw new UnauthorizedException('Invalid or expired code');
+    }
+
+    await this.cache.del(`otp:login:${user.id}`);
+    const tokens = await this.generateTokens(user.id, user.email);
+    const workspaces = await this.workspaceService.findAll(user.id);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        status: user.status,
+        created_at: user.created_at.toISOString(),
+        updated_at: user.updated_at.toISOString(),
+      },
+      tokens,
+      workspaces,
     };
   }
 }

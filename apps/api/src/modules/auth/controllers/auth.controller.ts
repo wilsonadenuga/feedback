@@ -1,7 +1,13 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
-import { RegisterDto, ConfirmEmailDto, ResendVerificationDto } from '../dto';
+import {
+  RegisterDto,
+  ConfirmEmailDto,
+  ResendVerificationDto,
+  LoginRequestDto,
+  LoginVerifyDto,
+} from '../dto';
 import { AuthSwagger } from '../../../swagger/auth.swagger';
 import { ResponseHelper } from '../../../common';
 
@@ -38,5 +44,22 @@ export class AuthController {
       result,
       'If an account exists, verification code has been sent',
     );
+  }
+
+  @Post('login/request')
+  @HttpCode(HttpStatus.OK)
+  async loginRequest(@Body() dto: LoginRequestDto) {
+    const result = await this.authService.loginRequest(dto);
+    return ResponseHelper.success(
+      result,
+      'If an account exists, login code has been sent to your email',
+    );
+  }
+
+  @Post('login/verify')
+  @HttpCode(HttpStatus.OK)
+  async loginVerify(@Body() dto: LoginVerifyDto) {
+    const result = await this.authService.loginVerify(dto);
+    return ResponseHelper.success(result, 'Login successful');
   }
 }

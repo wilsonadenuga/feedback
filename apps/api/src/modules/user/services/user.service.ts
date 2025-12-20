@@ -10,6 +10,10 @@ export class UserService {
     return this.userRepository.findOne({ email });
   }
 
+  async findUserById(id: string) {
+    return this.userRepository.findOne({ id });
+  }
+
   async createUser(name: string, email: string) {
     return this.userRepository.create({
       name,

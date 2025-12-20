@@ -10,6 +10,7 @@ import { PrismaModule } from '../../prisma/prisma.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { EmailsModule } from '../email/emails.module';
+import { WorkspaceModule } from '../workspace/workspace.module';
 import appConfig from '../../config/app.config';
 
 @Module({
@@ -46,6 +47,7 @@ import appConfig from '../../config/app.config';
     AuthModule,
     UserModule,
     EmailsModule,
+    WorkspaceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
