@@ -40,10 +40,7 @@ export class AuthService {
     return crypto.randomInt(100000, 999999).toString();
   }
 
-  private async sendVerificationCode(
-    userId: string,
-    email: string,
-  ): Promise<{ expires_in: number }> {
+  private async sendVerificationCode(userId: string, email: string) {
     const code = this.generateCode();
     const ttlMs = this.CODE_EXPIRY_MINUTES * 60 * 1000;
 
