@@ -4,6 +4,7 @@ import {
   ConflictException,
   Inject,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
 import { JwtService } from '@nestjs/jwt';
@@ -33,6 +34,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly workspaceService: WorkspaceService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly configService: ConfigService,
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
   ) {}
 
@@ -130,9 +132,19 @@ export class AuthService {
   private async generateTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
 
+    const refreshTokenSecret = this.configService.get<string>(
+      'jwt.refreshToken.secret',
+    );
+    const refreshTokenExpiresIn = this.configService.get<string>(
+      'jwt.refreshToken.expiresIn',
+    );
+
     const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload, { expiresIn: '15m' }),
-      this.jwtService.signAsync(payload, { expiresIn: '7d' }),
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, {
+        secret: refreshTokenSecret,
+        expiresIn: Number(refreshTokenExpiresIn),
+      }),
     ]);
 
     const expiresAt = new Date();

@@ -9,6 +9,10 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRATION: z.string().default('15m'),
+  JWT_ACCESS_TOKEN_SECRET: z.string().min(32),
+  JWT_ACCESS_TOKEN_EXPIRATION: z.string().default('3d'),
+  JWT_REFRESH_TOKEN_SECRET: z.string().min(32),
+  JWT_REFRESH_TOKEN_EXPIRATION: z.string().default('7d'),
   REDIS_URL: z.url(),
   RESEND_API_KEY: z.string().min(1),
 });
@@ -42,6 +46,14 @@ export default () => ({
   jwt: {
     secret: env.JWT_SECRET,
     expiryTime: env.JWT_EXPIRATION,
+    accessToken: {
+      secret: env.JWT_ACCESS_TOKEN_SECRET,
+      expiresIn: env.JWT_ACCESS_TOKEN_EXPIRATION,
+    },
+    refreshToken: {
+      secret: env.JWT_REFRESH_TOKEN_SECRET,
+      expiresIn: env.JWT_REFRESH_TOKEN_EXPIRATION,
+    },
   },
   redis: {
     url: env.REDIS_URL,
