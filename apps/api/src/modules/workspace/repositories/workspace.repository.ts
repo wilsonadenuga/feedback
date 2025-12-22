@@ -23,6 +23,12 @@ export class WorkspaceRepository {
             role: WORKSPACE_ROLES.ADMIN,
           },
         },
+        projects: {
+          create: {
+            name: 'Default Project',
+            description: 'Your first project',
+          },
+        },
       },
     });
   }
@@ -31,6 +37,7 @@ export class WorkspaceRepository {
     return this.prisma.workspace.findUnique({
       where: { id },
       include: {
+        projects: true,
         members: {
           select: {
             id: true,
@@ -83,6 +90,15 @@ export class WorkspaceRepository {
         role: true,
         workspace_id: true,
         user_id: true,
+      },
+    });
+  }
+
+  async findByIdWithProjects(id: string) {
+    return this.prisma.workspace.findUnique({
+      where: { id },
+      include: {
+        projects: true,
       },
     });
   }

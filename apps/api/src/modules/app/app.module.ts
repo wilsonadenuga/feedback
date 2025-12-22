@@ -11,6 +11,7 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { EmailsModule } from '../email/emails.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
+import { ProjectModule } from '../projects/project.module';
 import appConfig from '../../config/app.config';
 
 @Module({
@@ -48,6 +49,7 @@ import appConfig from '../../config/app.config';
     UserModule,
     EmailsModule,
     WorkspaceModule,
+    ProjectModule,
   ],
   controllers: [AppController],
   providers: [AppService],

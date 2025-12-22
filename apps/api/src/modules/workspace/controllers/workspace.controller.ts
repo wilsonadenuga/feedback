@@ -52,6 +52,14 @@ export class WorkspaceController {
     return ResponseHelper.success(workspace);
   }
 
+  @Get(':workspace_id/projects')
+  @UseGuards(JwtAuthGuard, WorkspaceGuard)
+  @WorkspaceSwagger.getProjects()
+  async getProjects(@Param('workspace_id') workspaceId: string) {
+    const projects = await this.workspaceService.getProjects(workspaceId);
+    return ResponseHelper.success(projects, 'Projects retrieved successfully');
+  }
+
   @Put(':workspace_id')
   @UseGuards(JwtAuthGuard, WorkspaceGuard)
   @WorkspaceSwagger.update()

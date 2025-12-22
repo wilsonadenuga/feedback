@@ -10,6 +10,7 @@ import {
   WorkspacesResponseDto,
   WorkspaceDeleteResponseDto,
 } from '../modules/workspace/dto';
+import { ProjectsResponseDto } from '../modules/projects/dto';
 
 export class WorkspaceSwagger {
   static create() {
@@ -121,6 +122,32 @@ export class WorkspaceSwagger {
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
         description: 'Unauthorized - Invalid or missing token',
+      }),
+    );
+  }
+
+  static getProjects() {
+    return applyDecorators(
+      ApiBearerAuth(),
+      ApiOperation({
+        summary: 'Get all projects in workspace',
+        description: 'Returns all projects within the specified workspace',
+      }),
+      ApiOkResponse({
+        description: 'Projects retrieved successfully',
+        type: ProjectsResponseDto,
+      }),
+      ApiResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: 'Workspace not found',
+      }),
+      ApiResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: 'Unauthorized - Invalid or missing token',
+      }),
+      ApiResponse({
+        status: HttpStatus.FORBIDDEN,
+        description: 'You do not have access to this workspace',
       }),
     );
   }
