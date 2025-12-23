@@ -1,13 +1,14 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ProjectController } from './controllers/project.controller';
 import { ProjectService } from './services/project.service';
 import { ProjectRepository } from './repositories/project.repository';
 import { ProjectGuard } from './guards';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
+import { CategoryModule } from '../categories/category.module';
 
 @Module({
-  imports: [PrismaModule, WorkspaceModule],
+  imports: [PrismaModule, WorkspaceModule, forwardRef(() => CategoryModule)],
   controllers: [ProjectController],
   providers: [ProjectService, ProjectRepository, ProjectGuard],
   exports: [ProjectService, ProjectRepository, ProjectGuard],

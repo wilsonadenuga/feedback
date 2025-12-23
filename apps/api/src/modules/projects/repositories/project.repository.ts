@@ -1,12 +1,20 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateProjectDto, UpdateProjectDto } from '../dto';
 
 @Injectable()
 export class ProjectRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async create(workspaceId: string, data: CreateProjectDto) {
+    const defaultCategories = this.configService.get<string[]>(
+      'categories.defaults',
+    );
+
     return this.prisma.project.create({
       data: {
         name: data.name,
@@ -15,6 +23,12 @@ export class ProjectRepository {
           connect: {
             id: workspaceId,
           },
+        },
+        categories: {
+          create: defaultCategories.map((name) => ({
+            name,
+            is_default: true,
+          })),
         },
       },
     });
@@ -55,5 +69,39 @@ export class ProjectRepository {
         workspace_id: workspaceId,
       },
     });
+  }
+
+  async validateUserAccess(projectId: string, userId: string) {
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        workspace: {
+          include: {
+            members: {
+              where: {
+                user_id: userId,
+              },
+              select: {
+                id: true,
+                role: true,
+                workspace_id: true,
+                user_id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!project) {
+      return null;
+    }
+
+    const member = project.workspace.members[0];
+    if (!member) {
+      return null;
+    }
+
+    return { project, member };
   }
 }

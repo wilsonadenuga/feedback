@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { ProjectRepository } from '../repositories/project.repository';
 import { CreateProjectDto, UpdateProjectDto } from '../dto';
 
@@ -8,6 +12,19 @@ export class ProjectService {
 
   async create(workspaceId: string, data: CreateProjectDto) {
     return this.projectRepository.create(workspaceId, data);
+  }
+
+  async validateUserAccess(projectId: string, userId: string) {
+    const result = await this.projectRepository.validateUserAccess(
+      projectId,
+      userId,
+    );
+
+    if (!result) {
+      throw new ForbiddenException('You do not have access to this project');
+    }
+
+    return result;
   }
 
   async findOne(projectId: string) {

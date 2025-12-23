@@ -15,13 +15,18 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ProjectGuard } from '../guards';
 import { ResponseHelper } from '../../../common';
 import { ProjectSwagger } from '../../../swagger/project.swagger';
+import { CategoryService } from '../../categories/services/category.service';
+import { CategorySwagger } from '../../../swagger/category.swagger';
 
 @ApiTags('projects')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('projects')
 export class ProjectController {
-  constructor(private readonly projectService: ProjectService) {}
+  constructor(
+    private readonly projectService: ProjectService,
+    private readonly categoryService: CategoryService,
+  ) {}
 
   @Post()
   @ProjectSwagger.create()
@@ -55,5 +60,16 @@ export class ProjectController {
   async delete(@Param('project_id') projectId: string) {
     await this.projectService.delete(projectId);
     return ResponseHelper.success(null, 'Project deleted successfully');
+  }
+
+  @Get(':project_id/categories')
+  @UseGuards(ProjectGuard)
+  @CategorySwagger.getProjectCategories()
+  async getCategories(@Param('project_id') projectId: string) {
+    const categories = await this.categoryService.findByProjectId(projectId);
+    return ResponseHelper.success(
+      categories,
+      'Categories retrieved successfully',
+    );
   }
 }

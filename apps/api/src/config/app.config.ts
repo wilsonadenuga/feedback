@@ -15,6 +15,10 @@ const envSchema = z.object({
   JWT_REFRESH_TOKEN_EXPIRATION: z.string().default('7d'),
   REDIS_URL: z.url(),
   RESEND_API_KEY: z.string().min(1),
+  DEFAULT_CATEGORIES: z
+    .string()
+    .default('Feature Request,Bug,Improvement')
+    .transform((val) => val.split(',').map((v) => v.trim())),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -60,5 +64,8 @@ export default () => ({
   },
   resend: {
     apiKey: env.RESEND_API_KEY,
+  },
+  categories: {
+    defaults: env.DEFAULT_CATEGORIES,
   },
 });

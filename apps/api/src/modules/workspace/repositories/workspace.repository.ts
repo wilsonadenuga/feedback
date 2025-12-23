@@ -1,13 +1,21 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
 import { WORKSPACE_ROLES } from '@feedback/schema';
 
 @Injectable()
 export class WorkspaceRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async create(ownerId: string, data: CreateWorkspaceDto) {
+    const defaultCategories = this.configService.get<string[]>(
+      'categories.defaults',
+    );
+
     return this.prisma.workspace.create({
       data: {
         name: data.name,
@@ -27,6 +35,12 @@ export class WorkspaceRepository {
           create: {
             name: 'Default Project',
             description: 'Your first project',
+            categories: {
+              create: defaultCategories.map((name) => ({
+                name,
+                is_default: true,
+              })),
+            },
           },
         },
       },

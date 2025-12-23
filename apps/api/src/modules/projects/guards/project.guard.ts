@@ -2,18 +2,13 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { ProjectRepository } from '../repositories/project.repository';
-import { WorkspaceRepository } from '../../workspace/repositories/workspace.repository';
+import { ProjectService } from '../services/project.service';
 
 @Injectable()
 export class ProjectGuard implements CanActivate {
-  constructor(
-    private readonly projectRepository: ProjectRepository,
-    private readonly workspaceRepository: WorkspaceRepository,
-  ) {}
+  constructor(private readonly projectService: ProjectService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -24,20 +19,10 @@ export class ProjectGuard implements CanActivate {
       throw new NotFoundException('Project ID is required');
     }
 
-    const project = await this.projectRepository.findById(projectId);
-
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
-
-    const member = await this.workspaceRepository.findMemberByUserAndWorkspace(
+    const { project, member } = await this.projectService.validateUserAccess(
+      projectId,
       user.id,
-      project.workspace_id,
     );
-
-    if (!member) {
-      throw new ForbiddenException('You do not have access to this project');
-    }
 
     request.project = project;
     request.workspaceMember = member;
