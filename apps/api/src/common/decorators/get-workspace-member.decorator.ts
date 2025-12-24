@@ -1,5 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
+// TODO: we should define this elsewhere maybe
 export type WorkspaceMember = {
   id: string;
   role: string;
