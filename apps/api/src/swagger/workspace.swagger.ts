@@ -6,11 +6,13 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import {
-  WorkspaceResponseDto,
-  WorkspacesResponseDto,
-  WorkspaceDeleteResponseDto,
+  CreateWorkspaceResponseDto,
+  GetWorkspaceResponseDto,
+  GetWorkspacesResponseDto,
+  UpdateWorkspaceResponseDto,
+  DeleteWorkspaceResponseDto,
 } from '../modules/workspace/dto';
-import { ProjectsResponseDto } from '../modules/projects/dto';
+import { GetProjectsResponseDto } from '../modules/projects/dto';
 
 export class WorkspaceSwagger {
   static create() {
@@ -23,7 +25,7 @@ export class WorkspaceSwagger {
       }),
       ApiOkResponse({
         description: 'Workspace created successfully',
-        type: WorkspaceResponseDto,
+        type: CreateWorkspaceResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -46,7 +48,7 @@ export class WorkspaceSwagger {
       }),
       ApiOkResponse({
         description: 'Workspaces retrieved successfully',
-        type: WorkspacesResponseDto,
+        type: GetWorkspacesResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
@@ -64,7 +66,7 @@ export class WorkspaceSwagger {
       }),
       ApiOkResponse({
         description: 'Workspace retrieved successfully',
-        type: WorkspaceResponseDto,
+        type: GetWorkspaceResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
@@ -86,7 +88,7 @@ export class WorkspaceSwagger {
       }),
       ApiOkResponse({
         description: 'Workspace updated successfully',
-        type: WorkspaceResponseDto,
+        type: UpdateWorkspaceResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -113,7 +115,7 @@ export class WorkspaceSwagger {
       }),
       ApiOkResponse({
         description: 'Workspace deleted successfully',
-        type: WorkspaceDeleteResponseDto,
+        type: DeleteWorkspaceResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
@@ -135,7 +137,7 @@ export class WorkspaceSwagger {
       }),
       ApiOkResponse({
         description: 'Projects retrieved successfully',
-        type: ProjectsResponseDto,
+        type: GetProjectsResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,

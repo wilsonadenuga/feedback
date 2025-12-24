@@ -6,8 +6,10 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import {
-  ProjectResponseDto,
-  ProjectDeleteResponseDto,
+  CreateProjectResponseDto,
+  GetProjectResponseDto,
+  UpdateProjectResponseDto,
+  DeleteProjectResponseDto,
 } from '../modules/projects/dto';
 
 export class ProjectSwagger {
@@ -21,7 +23,7 @@ export class ProjectSwagger {
       }),
       ApiOkResponse({
         description: 'Project created successfully',
-        type: ProjectResponseDto,
+        type: CreateProjectResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -43,7 +45,7 @@ export class ProjectSwagger {
       }),
       ApiOkResponse({
         description: 'Project retrieved successfully',
-        type: ProjectResponseDto,
+        type: GetProjectResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
@@ -69,7 +71,7 @@ export class ProjectSwagger {
       }),
       ApiOkResponse({
         description: 'Project updated successfully',
-        type: ProjectResponseDto,
+        type: UpdateProjectResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -99,7 +101,7 @@ export class ProjectSwagger {
       }),
       ApiOkResponse({
         description: 'Project deleted successfully',
-        type: ProjectDeleteResponseDto,
+        type: DeleteProjectResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
