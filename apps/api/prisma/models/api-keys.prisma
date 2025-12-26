@@ -1,10 +1,11 @@
 model ApiKey {
-  id         String   @id @default(uuid())
-  name       String
-  key        String   @unique
-  project_id String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id            String   @id @default(uuid())
+  name          String
+  encrypted_key String   @unique
+  masked_key    String
+  project_id    String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
   project Project @relation(fields: [project_id], references: [id])
 
