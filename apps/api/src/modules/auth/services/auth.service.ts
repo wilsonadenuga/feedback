@@ -16,7 +16,7 @@ import {
   RegisterDto,
   ConfirmEmailDto,
   ResendVerificationDto,
-  LoginRequestDto,
+  LoginDto,
   LoginVerifyDto,
 } from '../dto';
 import { UserStatus } from '@feedback/schema';
@@ -167,7 +167,7 @@ export class AuthService {
     };
   }
 
-  async loginRequest(dto: LoginRequestDto) {
+  async login(dto: LoginDto) {
     const { email } = dto;
     const user = await this.userService.findUserByEmail(email);
 

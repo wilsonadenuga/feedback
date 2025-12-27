@@ -6,33 +6,42 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { ProjectService } from '../services/project.service';
-import { CreateProjectDto, UpdateProjectDto } from '../dto';
+import {
+  CreateProjectDto,
+  UpdateProjectDto,
+  GetProjectsQueryDto,
+} from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ProjectGuard } from '../guards';
 import { ResponseHelper } from '../../../common';
 import { ProjectSwagger } from '../../../swagger/project.swagger';
-import { CategoryService } from '../../categories/services/category.service';
-import { CategorySwagger } from '../../../swagger/category.swagger';
 
 @ApiTags('projects')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('projects')
 export class ProjectController {
-  constructor(
-    private readonly projectService: ProjectService,
-    private readonly categoryService: CategoryService,
-  ) {}
+  constructor(private readonly projectService: ProjectService) {}
 
   @Post()
   @ProjectSwagger.create()
   async create(@Body() dto: CreateProjectDto) {
     const project = await this.projectService.create(dto.workspace_id, dto);
     return ResponseHelper.success(project, 'Project created successfully');
+  }
+
+  @Get()
+  @ProjectSwagger.findAll()
+  async findAll(@Query() query: GetProjectsQueryDto) {
+    const projects = await this.projectService.findByWorkspaceId(
+      query.workspace_id,
+    );
+    return ResponseHelper.success(projects, 'Projects retrieved successfully');
   }
 
   @Get(':project_id')
@@ -60,16 +69,5 @@ export class ProjectController {
   async delete(@Param('project_id') projectId: string) {
     await this.projectService.delete(projectId);
     return ResponseHelper.success(null, 'Project deleted successfully');
-  }
-
-  @Get(':project_id/categories')
-  @UseGuards(ProjectGuard)
-  @CategorySwagger.getProjectCategories()
-  async getCategories(@Param('project_id') projectId: string) {
-    const categories = await this.categoryService.findByProjectId(projectId);
-    return ResponseHelper.success(
-      categories,
-      'Categories retrieved successfully',
-    );
   }
 }

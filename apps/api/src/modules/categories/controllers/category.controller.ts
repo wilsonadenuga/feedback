@@ -6,11 +6,17 @@ import {
   Delete,
   Body,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoryService } from '../services/category.service';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
+import {
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  GetCategoriesQueryDto,
+  CategoryResponseDto,
+} from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ResponseHelper } from '../../../common';
 import { CategorySwagger } from '../../../swagger/category.swagger';
@@ -27,6 +33,18 @@ export class CategoryController {
   async create(@Body() dto: CreateCategoryDto) {
     const category = await this.categoryService.create(dto.project_id, dto);
     return ResponseHelper.success(category, 'Category created successfully');
+  }
+
+  @Get()
+  @CategorySwagger.findAll()
+  async findAll(@Query() query: GetCategoriesQueryDto) {
+    const categories = await this.categoryService.findByProjectId(
+      query.project_id,
+    );
+    return ResponseHelper.success(
+      categories,
+      'Categories retrieved successfully',
+    );
   }
 
   @Get(':category_id')

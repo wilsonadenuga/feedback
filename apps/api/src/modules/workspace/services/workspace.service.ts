@@ -88,15 +88,4 @@ export class WorkspaceService {
 
     await this.workspaceRepository.delete(workspaceId);
   }
-
-  async getProjects(workspaceId: string) {
-    const workspace =
-      await this.workspaceRepository.findByIdWithProjects(workspaceId);
-
-    if (!workspace) {
-      throw new NotFoundException('Workspace not found');
-    }
-
-    return workspace.projects;
-  }
 }

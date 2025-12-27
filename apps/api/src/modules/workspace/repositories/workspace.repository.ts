@@ -57,13 +57,4 @@ export class WorkspaceRepository {
       where: { id },
     });
   }
-
-  async findByIdWithProjects(id: string) {
-    return this.prisma.workspace.findUnique({
-      where: { id },
-      include: {
-        projects: true,
-      },
-    });
-  }
 }

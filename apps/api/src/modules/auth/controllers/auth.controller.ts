@@ -5,7 +5,7 @@ import {
   RegisterDto,
   ConfirmEmailDto,
   ResendVerificationDto,
-  LoginRequestDto,
+  LoginDto,
   LoginVerifyDto,
 } from '../dto';
 import { AuthSwagger } from '../../../swagger/auth.swagger';
@@ -46,10 +46,10 @@ export class AuthController {
     );
   }
 
-  @Post('login/request')
+  @Post('login')
   @HttpCode(HttpStatus.OK)
-  async loginRequest(@Body() dto: LoginRequestDto) {
-    const result = await this.authService.loginRequest(dto);
+  async login(@Body() dto: LoginDto) {
+    const result = await this.authService.login(dto);
     return ResponseHelper.success(
       result,
       'If an account exists, login code has been sent to your email',

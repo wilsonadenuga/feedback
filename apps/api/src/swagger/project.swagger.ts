@@ -4,10 +4,12 @@ import {
   ApiOkResponse,
   ApiResponse,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import {
   CreateProjectResponseDto,
   GetProjectResponseDto,
+  GetProjectsResponseDto,
   UpdateProjectResponseDto,
   DeleteProjectResponseDto,
 } from '../modules/projects/dto';
@@ -114,6 +116,35 @@ export class ProjectSwagger {
       ApiResponse({
         status: HttpStatus.FORBIDDEN,
         description: 'You do not have access to this project',
+      }),
+    );
+  }
+
+  static findAll() {
+    return applyDecorators(
+      ApiBearerAuth(),
+      ApiOperation({
+        summary: 'Get all projects by workspace',
+        description:
+          'Returns all projects within the specified workspace. Requires workspace_id as query parameter.',
+      }),
+      ApiQuery({
+        name: 'workspace_id',
+        required: true,
+        description: 'The ID of the workspace to get projects for',
+        type: String,
+      }),
+      ApiOkResponse({
+        description: 'Projects retrieved successfully',
+        type: GetProjectsResponseDto,
+      }),
+      ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Invalid workspace_id',
+      }),
+      ApiResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: 'Unauthorized - Invalid or missing token',
       }),
     );
   }

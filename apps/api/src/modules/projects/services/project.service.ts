@@ -86,4 +86,8 @@ export class ProjectService {
 
     await this.projectRepository.delete(projectId);
   }
+
+  async findByWorkspaceId(workspaceId: string) {
+    return this.projectRepository.findByWorkspaceId(workspaceId);
+  }
 }

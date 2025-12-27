@@ -4,10 +4,13 @@ import {
   ApiOkResponse,
   ApiResponse,
   ApiBearerAuth,
+  ApiQuery,
 } from '@nestjs/swagger';
 import {
   CategoryResponseDto,
   CategoryDeleteResponseDto,
+  GetCategoryResponseDto,
+  GetCategoriesResponseDto,
 } from '../modules/categories/dto';
 
 export class CategorySwagger {
@@ -21,7 +24,7 @@ export class CategorySwagger {
       }),
       ApiOkResponse({
         description: 'Category created successfully',
-        type: CategoryResponseDto,
+        type: GetCategoryResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -43,7 +46,7 @@ export class CategorySwagger {
       }),
       ApiOkResponse({
         description: 'Category retrieved successfully',
-        type: CategoryResponseDto,
+        type: GetCategoryResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
@@ -69,7 +72,7 @@ export class CategorySwagger {
       }),
       ApiOkResponse({
         description: 'Category updated successfully',
-        type: CategoryResponseDto,
+        type: GetCategoryResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -116,29 +119,31 @@ export class CategorySwagger {
     );
   }
 
-  static getProjectCategories() {
+  static findAll() {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Get all categories in project',
-        description: 'Returns all categories within the specified project',
+        summary: 'Get all categories by project',
+        description:
+          'Returns all categories within the specified project. Requires project_id as query parameter.',
+      }),
+      ApiQuery({
+        name: 'project_id',
+        required: true,
+        description: 'The ID of the project to get categories for',
+        type: String,
       }),
       ApiOkResponse({
         description: 'Categories retrieved successfully',
-        type: CategoryResponseDto,
-        isArray: true,
+        type: GetCategoriesResponseDto,
       }),
       ApiResponse({
-        status: HttpStatus.NOT_FOUND,
-        description: 'Project not found',
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Invalid project_id',
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
         description: 'Unauthorized - Invalid or missing token',
-      }),
-      ApiResponse({
-        status: HttpStatus.FORBIDDEN,
-        description: 'You do not have access to this project',
       }),
     );
   }
