@@ -12,7 +12,14 @@ export class FeedbackRepository {
       include: {
         categories: {
           include: {
-            category: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                is_default: true,
+              },
+            },
           },
         },
       },
@@ -25,7 +32,14 @@ export class FeedbackRepository {
       include: {
         categories: {
           include: {
-            category: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                is_default: true,
+              },
+            },
           },
         },
         project: true,
@@ -48,7 +62,14 @@ export class FeedbackRepository {
         include: {
           categories: {
             include: {
-              category: true,
+              category: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  is_default: true,
+                },
+              },
             },
           },
         },
