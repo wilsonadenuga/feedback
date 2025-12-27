@@ -10,9 +10,9 @@ export class FeedbackRepository {
     return this.prisma.feedback.create({
       data,
       include: {
-        categories: {
+        labels: {
           include: {
-            category: {
+            label: {
               select: {
                 id: true,
                 name: true,
@@ -30,9 +30,9 @@ export class FeedbackRepository {
     return this.prisma.feedback.findUnique({
       where: { id },
       include: {
-        categories: {
+        labels: {
           include: {
-            category: {
+            label: {
               select: {
                 id: true,
                 name: true,
@@ -60,9 +60,9 @@ export class FeedbackRepository {
         take,
         orderBy,
         include: {
-          categories: {
+          labels: {
             include: {
-              category: {
+              label: {
                 select: {
                   id: true,
                   name: true,

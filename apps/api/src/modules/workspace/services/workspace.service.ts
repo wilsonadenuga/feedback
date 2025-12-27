@@ -14,9 +14,7 @@ export class WorkspaceService {
   ) {}
 
   async create(userId: string, data: CreateWorkspaceDto) {
-    const defaultCategories = this.configService.get<string[]>(
-      'categories.defaults',
-    );
+    const defaultLabels = this.configService.get<string[]>('labels.defaults');
 
     const createData: Prisma.WorkspaceCreateInput = {
       name: data.name,
@@ -36,8 +34,8 @@ export class WorkspaceService {
         create: {
           name: 'Default Project',
           description: 'Your first project',
-          categories: {
-            create: defaultCategories.map((name) => ({
+          labels: {
+            create: defaultLabels.map((name) => ({
               name,
               slug: generateSlug(name),
               is_default: true,

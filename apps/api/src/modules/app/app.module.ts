@@ -12,7 +12,7 @@ import { UserModule } from '../user/user.module';
 import { EmailsModule } from '../email/emails.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
 import { ProjectModule } from '../projects/project.module';
-import { CategoryModule } from '../categories/category.module';
+import { LabelModule } from '../labels/label.module';
 import { FeedbackModule } from '../feedbacks/feedback.module';
 import appConfig from '../../config/app.config';
 
@@ -52,7 +52,7 @@ import appConfig from '../../config/app.config';
     EmailsModule,
     WorkspaceModule,
     ProjectModule,
-    CategoryModule,
+    LabelModule,
     FeedbackModule,
   ],
   controllers: [AppController],

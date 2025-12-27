@@ -17,9 +17,7 @@ export class ProjectService {
   ) {}
 
   async create(workspaceId: string, data: CreateProjectDto) {
-    const defaultCategories = this.configService.get<string[]>(
-      'categories.defaults',
-    );
+    const defaultLabels = this.configService.get<string[]>('labels.defaults');
 
     return this.projectRepository.create({
       name: data.name,
@@ -29,8 +27,8 @@ export class ProjectService {
           id: workspaceId,
         },
       },
-      categories: {
-        create: defaultCategories.map((name) => ({
+      labels: {
+        create: defaultLabels.map((name) => ({
           name,
           slug: generateSlug(name),
           is_default: true,

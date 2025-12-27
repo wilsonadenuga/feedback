@@ -3,23 +3,23 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { Prisma } from '../../../../generated/client/browser';
 
 @Injectable()
-export class CategoryRepository {
+export class LabelRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Prisma.CategoryCreateInput) {
-    return this.prisma.category.create({
+  async create(data: Prisma.LabelCreateInput) {
+    return this.prisma.label.create({
       data,
     });
   }
 
   async findById(id: string) {
-    return this.prisma.category.findUnique({
+    return this.prisma.label.findUnique({
       where: { id },
     });
   }
 
   async findByProjectId(projectId: string) {
-    return this.prisma.category.findMany({
+    return this.prisma.label.findMany({
       where: {
         project_id: projectId,
       },
@@ -27,23 +27,23 @@ export class CategoryRepository {
     });
   }
 
-  async update(id: string, data: Prisma.CategoryUpdateInput) {
-    return this.prisma.category.update({
+  async update(id: string, data: Prisma.LabelUpdateInput) {
+    return this.prisma.label.update({
       where: { id },
       data,
     });
   }
 
   async delete(id: string) {
-    return this.prisma.category.delete({
+    return this.prisma.label.delete({
       where: { id },
     });
   }
 
-  async findByIdAndProject(categoryId: string, projectId: string) {
-    return this.prisma.category.findFirst({
+  async findByIdAndProject(labelId: string, projectId: string) {
+    return this.prisma.label.findFirst({
       where: {
-        id: categoryId,
+        id: labelId,
         project_id: projectId,
       },
     });

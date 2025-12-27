@@ -1,0 +1,14 @@
+model FeedbackLabel {
+  id          String   @id @default(uuid())
+  feedback_id String
+  label_id    String
+  created_at  DateTime @default(now())
+
+  feedback Feedback @relation(fields: [feedback_id], references: [id], onDelete: Cascade)
+  label    Label    @relation(fields: [label_id], references: [id], onDelete: Cascade)
+
+  @@unique([feedback_id, label_id])
+  @@index([feedback_id])
+  @@index([label_id])
+  @@map("feedback_labels")
+}

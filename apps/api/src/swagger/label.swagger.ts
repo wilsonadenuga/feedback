@@ -7,24 +7,24 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import {
-  CategoryResponseDto,
-  CategoryDeleteResponseDto,
-  GetCategoryResponseDto,
-  GetCategoriesResponseDto,
-} from '../modules/categories/dto';
+  LabelResponseDto,
+  LabelDeleteResponseDto,
+  GetLabelResponseDto,
+  GetLabelsResponseDto,
+} from '../modules/labels/dto';
 
-export class CategorySwagger {
+export class LabelSwagger {
   static create() {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Create a new category',
+        summary: 'Create a new label',
         description:
-          'Creates a new category. Provide project_id in the request body.',
+          'Creates a new label. Provide project_id in the request body.',
       }),
       ApiOkResponse({
-        description: 'Category created successfully',
-        type: GetCategoryResponseDto,
+        description: 'Label created successfully',
+        type: GetLabelResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -41,16 +41,16 @@ export class CategorySwagger {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Get category by ID',
-        description: 'Returns category details',
+        summary: 'Get label by ID',
+        description: 'Returns label details',
       }),
       ApiOkResponse({
-        description: 'Category retrieved successfully',
-        type: GetCategoryResponseDto,
+        description: 'Label retrieved successfully',
+        type: GetLabelResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
-        description: 'Category not found',
+        description: 'Label not found',
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
@@ -58,7 +58,7 @@ export class CategorySwagger {
       }),
       ApiResponse({
         status: HttpStatus.FORBIDDEN,
-        description: 'You do not have access to this category',
+        description: 'You do not have access to this label',
       }),
     );
   }
@@ -67,12 +67,12 @@ export class CategorySwagger {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Update category',
-        description: 'Updates category name',
+        summary: 'Update label',
+        description: 'Updates label name, description, and color',
       }),
       ApiOkResponse({
-        description: 'Category updated successfully',
-        type: GetCategoryResponseDto,
+        description: 'Label updated successfully',
+        type: GetLabelResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
@@ -80,7 +80,7 @@ export class CategorySwagger {
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
-        description: 'Category not found',
+        description: 'Label not found',
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
@@ -88,7 +88,7 @@ export class CategorySwagger {
       }),
       ApiResponse({
         status: HttpStatus.FORBIDDEN,
-        description: 'You do not have access to this category',
+        description: 'You do not have access to this label',
       }),
     );
   }
@@ -97,16 +97,16 @@ export class CategorySwagger {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Delete category',
-        description: 'Permanently deletes the category',
+        summary: 'Delete label',
+        description: 'Permanently deletes the label',
       }),
       ApiOkResponse({
-        description: 'Category deleted successfully',
-        type: CategoryDeleteResponseDto,
+        description: 'Label deleted successfully',
+        type: LabelDeleteResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
-        description: 'Category not found',
+        description: 'Label not found',
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
@@ -114,7 +114,7 @@ export class CategorySwagger {
       }),
       ApiResponse({
         status: HttpStatus.FORBIDDEN,
-        description: 'You do not have access to this category',
+        description: 'You do not have access to this label',
       }),
     );
   }
@@ -123,19 +123,19 @@ export class CategorySwagger {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Get all categories by project',
+        summary: 'Get all labels by project',
         description:
-          'Returns all categories within the specified project. Requires project_id as query parameter.',
+          'Returns all labels within the specified project. Requires project_id as query parameter.',
       }),
       ApiQuery({
         name: 'project_id',
         required: true,
-        description: 'The ID of the project to get categories for',
+        description: 'The ID of the project to get labels for',
         type: String,
       }),
       ApiOkResponse({
-        description: 'Categories retrieved successfully',
-        type: GetCategoriesResponseDto,
+        description: 'Labels retrieved successfully',
+        type: GetLabelsResponseDto,
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,

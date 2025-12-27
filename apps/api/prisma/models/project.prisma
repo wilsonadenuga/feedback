@@ -6,10 +6,10 @@ model Project {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 
-  workspace  Workspace  @relation(fields: [workspace_id], references: [id])
-  categories Category[]
-  feedbacks  Feedback[]
-  api_keys   ApiKey[]
+  workspace Workspace  @relation(fields: [workspace_id], references: [id])
+  labels    Label[]
+  feedbacks Feedback[]
+  api_keys  ApiKey[]
 
   @@unique([workspace_id, name])
   @@map("projects")

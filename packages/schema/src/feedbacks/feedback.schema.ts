@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { uuidSchema } from '../common';
-import { categorySchema } from '../categories/category.schema';
+import { labelSchema } from '../labels/label.schema';
 
 export const feedbackSchema = z.object({
   id: uuidSchema,
@@ -12,7 +12,7 @@ export const feedbackSchema = z.object({
   customer_email: z.string().nullable(),
   customer_name: z.string().nullable(),
   customer_meta: z.any().nullable(),
-  categories: z.array(categorySchema),
+  labels: z.array(labelSchema),
   created_at: z.string(),
   updated_at: z.string(),
 });

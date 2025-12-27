@@ -5,10 +5,10 @@ import { ProjectRepository } from './repositories/project.repository';
 import { ProjectGuard } from './guards';
 import { PrismaModule } from '../../prisma/prisma.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
-import { CategoryModule } from '../categories/category.module';
+import { LabelModule } from '../labels/label.module';
 
 @Module({
-  imports: [PrismaModule, WorkspaceModule, forwardRef(() => CategoryModule)],
+  imports: [PrismaModule, WorkspaceModule, forwardRef(() => LabelModule)],
   controllers: [ProjectController],
   providers: [ProjectService, ProjectRepository, ProjectGuard],
   exports: [ProjectService, ProjectRepository, ProjectGuard],

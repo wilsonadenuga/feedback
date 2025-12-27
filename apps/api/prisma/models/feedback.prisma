@@ -11,8 +11,8 @@ model Feedback {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 
-  project    Project            @relation(fields: [project_id], references: [id])
-  categories FeedbackCategory[]
+  project Project         @relation(fields: [project_id], references: [id])
+  labels  FeedbackLabel[]
 
   @@index([project_id])
   @@index([status])
