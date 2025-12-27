@@ -10,7 +10,6 @@ export const confirmEmailSchema = z.object({
     .max(10, 'Code must not exceed 10 characters'),
 });
 
-
 export const confirmEmailResponseSchema = z.object({
   user: userSchema,
   tokens: authTokensSchema,

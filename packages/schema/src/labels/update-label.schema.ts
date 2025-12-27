@@ -15,7 +15,10 @@ export const updateLabelSchema = z.object({
     .optional(),
   color: z
     .string()
-    .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Color must be a valid hex color code')
+    .regex(
+      /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+      'Color must be a valid hex color code',
+    )
     .optional(),
 });
 

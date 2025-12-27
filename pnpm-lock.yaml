@@ -12,6 +12,28 @@ catalogs:
     zod:
       specifier: ^4.1.13
       version: 4.2.1
+  linting:
+    "@eslint/js":
+      specifier: ^9.39.1
+      version: 9.39.2
+    "@typescript-eslint/eslint-plugin":
+      specifier: ^8.49.0
+      version: 8.50.1
+    "@typescript-eslint/parser":
+      specifier: ^8.49.0
+      version: 8.50.1
+    eslint:
+      specifier: ^9.39.1
+      version: 9.39.2
+    eslint-config-prettier:
+      specifier: ^9.1.0
+      version: 9.1.2
+    eslint-plugin-prettier:
+      specifier: ^5.2.1
+      version: 5.5.4
+    prettier:
+      specifier: ^3.3.3
+      version: 3.7.4
 
 importers:
   .:
@@ -153,25 +175,25 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       "@typescript-eslint/eslint-plugin":
-        specifier: ^8.49.0
+        specifier: catalog:linting
         version: 8.50.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       "@typescript-eslint/parser":
-        specifier: ^8.49.0
+        specifier: catalog:linting
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint:
-        specifier: ^9.39.1
+        specifier: catalog:linting
         version: 9.39.2(jiti@2.6.1)
       eslint-config-prettier:
-        specifier: ^9.1.0
+        specifier: catalog:linting
         version: 9.1.2(eslint@9.39.2(jiti@2.6.1))
       eslint-plugin-prettier:
-        specifier: ^5.2.1
+        specifier: catalog:linting
         version: 5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@9.1.2(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)
       jest:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@20.19.27)(ts-node@10.9.2(@types/node@20.19.27)(typescript@5.9.3))
       prettier:
-        specifier: ^3.3.3
+        specifier: catalog:linting
         version: 3.7.4
       prisma:
         specifier: ^7.0.1
@@ -232,18 +254,30 @@ importers:
         specifier: "catalog:"
         version: 4.2.1
     devDependencies:
+      "@eslint/js":
+        specifier: catalog:linting
+        version: 9.39.2
       "@types/node":
         specifier: ^20.14.15
         version: 20.19.27
       "@typescript-eslint/eslint-plugin":
-        specifier: ^8.49.0
+        specifier: catalog:linting
         version: 8.50.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       "@typescript-eslint/parser":
-        specifier: ^8.49.0
+        specifier: catalog:linting
         version: 8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint:
-        specifier: ^9.39.1
+        specifier: catalog:linting
         version: 9.39.2(jiti@2.6.1)
+      eslint-config-prettier:
+        specifier: catalog:linting
+        version: 9.1.2(eslint@9.39.2(jiti@2.6.1))
+      eslint-plugin-prettier:
+        specifier: catalog:linting
+        version: 5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@9.1.2(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))(prettier@3.7.4)
+      prettier:
+        specifier: catalog:linting
+        version: 3.7.4
       typescript:
         specifier: "catalog:"
         version: 5.9.3

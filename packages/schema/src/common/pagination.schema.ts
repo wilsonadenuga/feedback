@@ -5,7 +5,6 @@ export const paginationQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(10),
 });
 
-
 export const paginationResponseSchema = z.object({
   total: z.number().int().nonnegative(),
   page: z.number().int().positive(),

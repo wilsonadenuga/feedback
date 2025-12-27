@@ -8,7 +8,12 @@ export const UserStatus = {
   BANNED: 'BANNED',
 } as const;
 
-export const userStatusSchema = z.enum(['UNVERIFIED', 'ACTIVE', 'SUSPENDED', 'BANNED']);
+export const userStatusSchema = z.enum([
+  'UNVERIFIED',
+  'ACTIVE',
+  'SUSPENDED',
+  'BANNED',
+]);
 export type UserStatusType = z.infer<typeof userStatusSchema>;
 
 export const userSchema = z.object({

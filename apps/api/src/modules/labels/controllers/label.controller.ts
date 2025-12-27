@@ -11,12 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { LabelService } from '../services/label.service';
-import {
-  CreateLabelDto,
-  UpdateLabelDto,
-  GetLabelsQueryDto,
-  LabelResponseDto,
-} from '../dto';
+import { CreateLabelDto, UpdateLabelDto, GetLabelsQueryDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ResponseHelper } from '../../../common';
 import { LabelSwagger } from '../../../swagger/label.swagger';

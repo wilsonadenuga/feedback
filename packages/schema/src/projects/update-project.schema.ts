@@ -9,7 +9,11 @@ export const updateProjectSchema = z.object({
     .max(100, 'Project name must not exceed 100 characters')
     .trim()
     .optional(),
-  description: z.string().max(500, 'Description must not exceed 500 characters').optional().nullable(),
+  description: z
+    .string()
+    .max(500, 'Description must not exceed 500 characters')
+    .optional()
+    .nullable(),
 });
 
 export const updateProjectResponseSchema = successResponseSchema(projectSchema);

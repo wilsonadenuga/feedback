@@ -10,7 +10,10 @@ export const createProjectSchema = z.object({
     .min(1, 'Project name is required')
     .max(100, 'Project name must not exceed 100 characters')
     .trim(),
-  description: z.string().max(500, 'Description must not exceed 500 characters').optional(),
+  description: z
+    .string()
+    .max(500, 'Description must not exceed 500 characters')
+    .optional(),
 });
 
 export const createProjectResponseSchema = successResponseSchema(projectSchema);

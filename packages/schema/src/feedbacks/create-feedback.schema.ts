@@ -17,11 +17,17 @@ export const createFeedbackSchema = z.object({
     .optional(),
   customer_id: z.string().optional(),
   customer_email: z.email('Invalid email address').optional(),
-  customer_name: z.string().max(100, 'Name must not exceed 100 characters').optional(),
+  customer_name: z
+    .string()
+    .max(100, 'Name must not exceed 100 characters')
+    .optional(),
   customer_meta: z.any().optional(),
 });
 
-export const createFeedbackResponseSchema = successResponseSchema(feedbackSchema);
+export const createFeedbackResponseSchema =
+  successResponseSchema(feedbackSchema);
 
 export type CreateFeedbackInput = z.infer<typeof createFeedbackSchema>;
-export type CreateFeedbackResponse = z.infer<typeof createFeedbackResponseSchema>;
+export type CreateFeedbackResponse = z.infer<
+  typeof createFeedbackResponseSchema
+>;

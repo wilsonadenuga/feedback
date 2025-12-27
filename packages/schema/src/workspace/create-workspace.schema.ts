@@ -11,7 +11,10 @@ export const createWorkspaceSchema = z.object({
   logo_url: z.url('Invalid logo URL').optional(),
 });
 
-export const createWorkspaceResponseSchema = successResponseSchema(workspaceSchema);
+export const createWorkspaceResponseSchema =
+  successResponseSchema(workspaceSchema);
 
 export type CreateWorkspaceInput = z.infer<typeof createWorkspaceSchema>;
-export type CreateWorkspaceResponse = z.infer<typeof createWorkspaceResponseSchema>;
+export type CreateWorkspaceResponse = z.infer<
+  typeof createWorkspaceResponseSchema
+>;

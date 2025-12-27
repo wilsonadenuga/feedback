@@ -12,7 +12,10 @@ export const updateWorkspaceSchema = z.object({
   logo_url: z.url('Invalid logo URL').optional().nullable(),
 });
 
-export const updateWorkspaceResponseSchema = successResponseSchema(workspaceSchema);
+export const updateWorkspaceResponseSchema =
+  successResponseSchema(workspaceSchema);
 
 export type UpdateWorkspaceInput = z.infer<typeof updateWorkspaceSchema>;
-export type UpdateWorkspaceResponse = z.infer<typeof updateWorkspaceResponseSchema>;
+export type UpdateWorkspaceResponse = z.infer<
+  typeof updateWorkspaceResponseSchema
+>;

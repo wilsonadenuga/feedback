@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { successResponseSchema } from '../common/success-response.schema';
-import { paginationQuerySchema, paginationResponseSchema } from '../common/pagination.schema';
+import {
+  paginationQuerySchema,
+  paginationResponseSchema,
+} from '../common/pagination.schema';
 import { feedbackSchema } from './feedback.schema';
 import { uuidSchema } from '../common/uuid.schema';
 

@@ -7,7 +7,6 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import {
-  LabelResponseDto,
   LabelDeleteResponseDto,
   GetLabelResponseDto,
   GetLabelsResponseDto,
