@@ -5,11 +5,13 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
-import { WorkspaceRepository } from '../repositories/workspace.repository';
+import { WorkspaceMemberService } from '../services/workspace-member.service';
 
 @Injectable()
 export class WorkspaceGuard implements CanActivate {
-  constructor(private readonly workspaceRepository: WorkspaceRepository) {}
+  constructor(
+    private readonly workspaceMemberService: WorkspaceMemberService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -20,10 +22,11 @@ export class WorkspaceGuard implements CanActivate {
       throw new NotFoundException('Workspace ID is required');
     }
 
-    const member = await this.workspaceRepository.findMemberByUserAndWorkspace(
-      user.id,
-      workspaceId,
-    );
+    const member =
+      await this.workspaceMemberService.checkUserBelongsToWorkspace(
+        user.id,
+        workspaceId,
+      );
 
     if (!member) {
       throw new ForbiddenException('You do not have access to this workspace');

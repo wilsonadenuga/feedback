@@ -11,4 +11,11 @@ export class WorkspaceMemberService {
   async create(workspaceId: string, data: AddWorkspaceMemberDto) {
     return this.workspaceMemberRepository.create(workspaceId, data);
   }
+
+  async checkUserBelongsToWorkspace(userId: string, workspaceId: string) {
+    return this.workspaceMemberRepository.findByUserAndWorkspace(
+      userId,
+      workspaceId,
+    );
+  }
 }

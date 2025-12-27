@@ -1,51 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
-import { WORKSPACE_ROLES } from '@feedback/schema';
-import { generateSlug } from '../../../common/helpers';
+import { Prisma } from '../../../../generated/client/browser';
 
 @Injectable()
 export class WorkspaceRepository {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(ownerId: string, data: CreateWorkspaceDto) {
-    const defaultCategories = this.configService.get<string[]>(
-      'categories.defaults',
-    );
-
+  async create(data: Prisma.WorkspaceCreateInput) {
     return this.prisma.workspace.create({
-      data: {
-        name: data.name,
-        logo_url: data.logo_url,
-        owner: {
-          connect: {
-            id: ownerId,
-          },
-        },
-        members: {
-          create: {
-            user_id: ownerId,
-            role: WORKSPACE_ROLES.ADMIN,
-          },
-        },
-        projects: {
-          create: {
-            name: 'Default Project',
-            description: 'Your first project',
-            categories: {
-              create: defaultCategories.map((name) => ({
-                name,
-                slug: generateSlug(name),
-                is_default: true,
-              })),
-            },
-          },
-        },
-      },
+      data,
     });
   }
 
@@ -82,7 +45,7 @@ export class WorkspaceRepository {
     });
   }
 
-  async update(id: string, data: UpdateWorkspaceDto) {
+  async update(id: string, data: Prisma.WorkspaceUpdateInput) {
     return this.prisma.workspace.update({
       where: { id },
       data,
@@ -92,21 +55,6 @@ export class WorkspaceRepository {
   async delete(id: string) {
     return this.prisma.workspace.delete({
       where: { id },
-    });
-  }
-
-  async findMemberByUserAndWorkspace(userId: string, workspaceId: string) {
-    return this.prisma.workspaceMember.findFirst({
-      where: {
-        user_id: userId,
-        workspace_id: workspaceId,
-      },
-      select: {
-        id: true,
-        role: true,
-        workspace_id: true,
-        user_id: true,
-      },
     });
   }
 

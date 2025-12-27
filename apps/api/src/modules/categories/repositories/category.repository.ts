@@ -1,26 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
-import { generateSlug } from '../../../common/helpers';
+import { Prisma } from '../../../../generated/client/browser';
 
 @Injectable()
 export class CategoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(projectId: string, data: CreateCategoryDto, isDefault = false) {
-    const slug = generateSlug(data.name);
-
+  async create(data: Prisma.CategoryCreateInput) {
     return this.prisma.category.create({
-      data: {
-        name: data.name,
-        slug,
-        is_default: isDefault,
-        project: {
-          connect: {
-            id: projectId,
-          },
-        },
-      },
+      data,
     });
   }
 
@@ -39,7 +27,7 @@ export class CategoryRepository {
     });
   }
 
-  async update(id: string, data: UpdateCategoryDto) {
+  async update(id: string, data: Prisma.CategoryUpdateInput) {
     return this.prisma.category.update({
       where: { id },
       data,

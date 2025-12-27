@@ -1,38 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateProjectDto, UpdateProjectDto } from '../dto';
-import { generateSlug } from '../../../common/helpers';
+import { Prisma } from '../../../../generated/client/browser';
 
 @Injectable()
 export class ProjectRepository {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(workspaceId: string, data: CreateProjectDto) {
-    const defaultCategories = this.configService.get<string[]>(
-      'categories.defaults',
-    );
-
+  async create(data: Prisma.ProjectCreateInput) {
     return this.prisma.project.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        workspace: {
-          connect: {
-            id: workspaceId,
-          },
-        },
-        categories: {
-          create: defaultCategories.map((name) => ({
-            name,
-            slug: generateSlug(name),
-            is_default: true,
-          })),
-        },
-      },
+      data,
     });
   }
 
@@ -51,7 +27,7 @@ export class ProjectRepository {
     });
   }
 
-  async update(id: string, data: UpdateProjectDto) {
+  async update(id: string, data: Prisma.ProjectUpdateInput) {
     return this.prisma.project.update({
       where: { id },
       data,

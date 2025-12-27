@@ -12,7 +12,6 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CategoryService } from '../services/category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CategoryGuard } from '../guards/category.guard';
 import { ResponseHelper } from '../../../common';
 import { CategorySwagger } from '../../../swagger/category.swagger';
 
@@ -31,7 +30,6 @@ export class CategoryController {
   }
 
   @Get(':category_id')
-  @UseGuards(CategoryGuard)
   @CategorySwagger.findOne()
   async findOne(@Param('category_id') categoryId: string) {
     const category = await this.categoryService.findOne(categoryId);
@@ -39,7 +37,6 @@ export class CategoryController {
   }
 
   @Put(':category_id')
-  @UseGuards(CategoryGuard)
   @CategorySwagger.update()
   async update(
     @Param('category_id') categoryId: string,
@@ -50,7 +47,6 @@ export class CategoryController {
   }
 
   @Delete(':category_id')
-  @UseGuards(CategoryGuard)
   @CategorySwagger.delete()
   async delete(@Param('category_id') categoryId: string) {
     await this.categoryService.delete(categoryId);

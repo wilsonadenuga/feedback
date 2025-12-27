@@ -3,15 +3,40 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ProjectRepository } from '../repositories/project.repository';
 import { CreateProjectDto, UpdateProjectDto } from '../dto';
+import { Prisma } from '../../../../generated/client/browser';
+import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class ProjectService {
-  constructor(private readonly projectRepository: ProjectRepository) {}
+  constructor(
+    private readonly projectRepository: ProjectRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   async create(workspaceId: string, data: CreateProjectDto) {
-    return this.projectRepository.create(workspaceId, data);
+    const defaultCategories = this.configService.get<string[]>(
+      'categories.defaults',
+    );
+
+    return this.projectRepository.create({
+      name: data.name,
+      description: data.description,
+      workspace: {
+        connect: {
+          id: workspaceId,
+        },
+      },
+      categories: {
+        create: defaultCategories.map((name) => ({
+          name,
+          slug: generateSlug(name),
+          is_default: true,
+        })),
+      },
+    });
   }
 
   async validateUserAccess(projectId: string, userId: string) {
@@ -44,7 +69,12 @@ export class ProjectService {
       throw new NotFoundException('Project not found');
     }
 
-    return this.projectRepository.update(projectId, data);
+    const updateData: Prisma.ProjectUpdateInput = {
+      name: data.name,
+      description: data.description,
+    };
+
+    return this.projectRepository.update(projectId, updateData);
   }
 
   async delete(projectId: string): Promise<void> {

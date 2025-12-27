@@ -1,13 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CategoryRepository } from '../repositories/category.repository';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
+import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
   async create(projectId: string, data: CreateCategoryDto) {
-    return this.categoryRepository.create(projectId, data);
+    return this.categoryRepository.create({
+      name: data.name,
+      slug: generateSlug(data.name),
+      is_default: false,
+      project: {
+        connect: {
+          id: projectId,
+        },
+      },
+    });
   }
 
   async findOne(categoryId: string) {
@@ -27,7 +37,10 @@ export class CategoryService {
       throw new NotFoundException('Category not found');
     }
 
-    return this.categoryRepository.update(categoryId, data);
+    return this.categoryRepository.update(categoryId, {
+      name: data.name,
+      ...(data.name && { slug: generateSlug(data.name) }),
+    });
   }
 
   async delete(categoryId: string): Promise<void> {
