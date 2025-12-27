@@ -13,6 +13,7 @@ import { EmailsModule } from '../email/emails.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
 import { ProjectModule } from '../projects/project.module';
 import { CategoryModule } from '../categories/category.module';
+import { FeedbackModule } from '../feedbacks/feedback.module';
 import appConfig from '../../config/app.config';
 
 @Module({
@@ -52,6 +53,7 @@ import appConfig from '../../config/app.config';
     WorkspaceModule,
     ProjectModule,
     CategoryModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
