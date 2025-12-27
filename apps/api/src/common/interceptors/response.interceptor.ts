@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import type { ApiResponse } from '@feedback/schema';
+import type { SuccessResponse } from '@feedback/schema';
 
 export interface ResponseWithMessage {
   message?: string;
@@ -15,12 +15,12 @@ export interface ResponseWithMessage {
 @Injectable()
 export class ResponseInterceptor<T> implements NestInterceptor<
   T,
-  ApiResponse<T>
+  SuccessResponse<T>
 > {
   intercept(
     _context: ExecutionContext,
     next: CallHandler,
-  ): Observable<ApiResponse<T>> {
+  ): Observable<SuccessResponse<T>> {
     return next.handle().pipe(
       map((data) => {
         if (
@@ -30,7 +30,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<
           'message' in data &&
           'data' in data
         ) {
-          return data as ApiResponse<T>;
+          return data as SuccessResponse<T>;
         }
 
         const message = (data as ResponseWithMessage)?.message || 'Success';

@@ -1,15 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
+import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class CategoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(projectId: string, data: CreateCategoryDto, isDefault = false) {
+    const slug = generateSlug(data.name);
+
     return this.prisma.category.create({
       data: {
         name: data.name,
+        slug,
         is_default: isDefault,
         project: {
           connect: {

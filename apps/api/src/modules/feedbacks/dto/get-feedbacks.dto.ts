@@ -1,11 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
 import {
   getFeedbacksQuerySchema,
-  feedbacksResponseSchema,
+  getFeedbacksResponseSchema,
 } from '@feedback/schema';
 
 export class GetFeedbacksDto extends createZodDto(getFeedbacksQuerySchema) {}
 
 export class GetFeedbacksResponseDto extends createZodDto(
-  feedbacksResponseSchema,
+  getFeedbacksResponseSchema,
 ) {}

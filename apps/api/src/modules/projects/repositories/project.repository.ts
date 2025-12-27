@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateProjectDto, UpdateProjectDto } from '../dto';
+import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class ProjectRepository {
@@ -27,6 +28,7 @@ export class ProjectRepository {
         categories: {
           create: defaultCategories.map((name) => ({
             name,
+            slug: generateSlug(name),
             is_default: true,
           })),
         },

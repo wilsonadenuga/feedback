@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
 import { WORKSPACE_ROLES } from '@feedback/schema';
+import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class WorkspaceRepository {
@@ -38,6 +39,7 @@ export class WorkspaceRepository {
             categories: {
               create: defaultCategories.map((name) => ({
                 name,
+                slug: generateSlug(name),
                 is_default: true,
               })),
             },

@@ -1,16 +1,18 @@
 import { createZodDto } from 'nestjs-zod';
 import {
-  categoryResponseSchema,
-  categoriesResponseSchema,
-  categoryDeleteResponseSchema,
+  getCategoryResponseSchema,
+  getCategoriesResponseSchema,
+  deleteCategoryResponseSchema,
 } from '@feedback/schema';
 
-export class CategoryResponseDto extends createZodDto(categoryResponseSchema) {}
+export class CategoryResponseDto extends createZodDto(
+  getCategoryResponseSchema,
+) {}
 
 export class CategoriesResponseDto extends createZodDto(
-  categoriesResponseSchema,
+  getCategoriesResponseSchema,
 ) {}
 
 export class CategoryDeleteResponseDto extends createZodDto(
-  categoryDeleteResponseSchema,
+  deleteCategoryResponseSchema,
 ) {}

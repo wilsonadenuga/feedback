@@ -1,11 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
 import {
   updateWorkspaceSchema,
-  workspaceResponseSchema,
+  updateWorkspaceResponseSchema,
 } from '@feedback/schema';
 
 export class UpdateWorkspaceDto extends createZodDto(updateWorkspaceSchema) {}
 
 export class UpdateWorkspaceResponseDto extends createZodDto(
-  workspaceResponseSchema,
+  updateWorkspaceResponseSchema,
 ) {}

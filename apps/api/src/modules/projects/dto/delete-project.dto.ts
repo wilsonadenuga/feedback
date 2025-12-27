@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
-import { projectDeleteResponseSchema } from '@feedback/schema';
+import { deleteProjectResponseSchema } from '@feedback/schema';
 
 export class DeleteProjectResponseDto extends createZodDto(
-  projectDeleteResponseSchema,
+  deleteProjectResponseSchema,
 ) {}
