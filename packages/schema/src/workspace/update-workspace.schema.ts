@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { successResponseSchema } from '../common/success-response.schema';
+import { workspaceSchema } from './workspace.schema';
 
 export const updateWorkspaceSchema = z.object({
   name: z
@@ -10,4 +12,7 @@ export const updateWorkspaceSchema = z.object({
   logo_url: z.url('Invalid logo URL').optional().nullable(),
 });
 
+export const updateWorkspaceResponseSchema = successResponseSchema(workspaceSchema);
+
 export type UpdateWorkspaceInput = z.infer<typeof updateWorkspaceSchema>;
+export type UpdateWorkspaceResponse = z.infer<typeof updateWorkspaceResponseSchema>;

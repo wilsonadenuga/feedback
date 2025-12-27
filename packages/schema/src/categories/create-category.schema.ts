@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { uuidSchema } from '../common';
+import { successResponseSchema } from '../common/success-response.schema';
+import { categorySchema } from './category.schema';
 
 export const createCategorySchema = z.object({
   project_id: uuidSchema,
@@ -10,4 +12,7 @@ export const createCategorySchema = z.object({
     .trim(),
 });
 
+export const createCategoryResponseSchema = successResponseSchema(categorySchema);
+
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
+export type CreateCategoryResponse = z.infer<typeof createCategoryResponseSchema>;

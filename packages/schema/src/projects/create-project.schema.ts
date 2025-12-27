@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { uuidSchema } from '../common';
+import { successResponseSchema } from '../common/success-response.schema';
+import { projectSchema } from './project.schema';
 
 export const createProjectSchema = z.object({
   workspace_id: uuidSchema,
@@ -11,4 +13,7 @@ export const createProjectSchema = z.object({
   description: z.string().max(500, 'Description must not exceed 500 characters').optional(),
 });
 
+export const createProjectResponseSchema = successResponseSchema(projectSchema);
+
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+export type CreateProjectResponse = z.infer<typeof createProjectResponseSchema>;

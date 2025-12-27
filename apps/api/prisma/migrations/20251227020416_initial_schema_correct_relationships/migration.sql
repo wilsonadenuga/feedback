@@ -16,6 +16,7 @@ CREATE TABLE "categories" (
     "id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
     "is_default" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -24,10 +25,19 @@ CREATE TABLE "categories" (
 );
 
 -- CreateTable
+CREATE TABLE "feedback_categories" (
+    "id" TEXT NOT NULL,
+    "feedback_id" TEXT NOT NULL,
+    "category_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "feedback_categories_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "feedbacks" (
     "id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
-    "category_id" TEXT,
     "title" TEXT NOT NULL,
     "description" TEXT,
     "status" TEXT NOT NULL DEFAULT 'OPEN',
@@ -127,13 +137,19 @@ CREATE UNIQUE INDEX "api_keys_encrypted_key_key" ON "api_keys"("encrypted_key");
 CREATE INDEX "categories_project_id_idx" ON "categories"("project_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "categories_project_id_name_key" ON "categories"("project_id", "name");
+CREATE UNIQUE INDEX "categories_project_id_slug_key" ON "categories"("project_id", "slug");
+
+-- CreateIndex
+CREATE INDEX "feedback_categories_feedback_id_idx" ON "feedback_categories"("feedback_id");
+
+-- CreateIndex
+CREATE INDEX "feedback_categories_category_id_idx" ON "feedback_categories"("category_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "feedback_categories_feedback_id_category_id_key" ON "feedback_categories"("feedback_id", "category_id");
 
 -- CreateIndex
 CREATE INDEX "feedbacks_project_id_idx" ON "feedbacks"("project_id");
-
--- CreateIndex
-CREATE INDEX "feedbacks_category_id_idx" ON "feedbacks"("category_id");
 
 -- CreateIndex
 CREATE INDEX "feedbacks_status_idx" ON "feedbacks"("status");
@@ -157,13 +173,16 @@ CREATE UNIQUE INDEX "workspace_members_workspace_id_user_id_key" ON "workspace_m
 ALTER TABLE "api_keys" ADD CONSTRAINT "api_keys_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "categories" ADD CONSTRAINT "categories_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "categories" ADD CONSTRAINT "categories_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "feedback_categories" ADD CONSTRAINT "feedback_categories_feedback_id_fkey" FOREIGN KEY ("feedback_id") REFERENCES "feedbacks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "feedback_categories" ADD CONSTRAINT "feedback_categories_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "feedbacks" ADD CONSTRAINT "feedbacks_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "feedbacks" ADD CONSTRAINT "feedbacks_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "projects" ADD CONSTRAINT "projects_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { successResponseSchema } from '../common/success-response.schema';
+import { projectSchema } from './project.schema';
 
 export const updateProjectSchema = z.object({
   name: z
@@ -10,4 +12,7 @@ export const updateProjectSchema = z.object({
   description: z.string().max(500, 'Description must not exceed 500 characters').optional().nullable(),
 });
 
+export const updateProjectResponseSchema = successResponseSchema(projectSchema);
+
 export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
+export type UpdateProjectResponse = z.infer<typeof updateProjectResponseSchema>;

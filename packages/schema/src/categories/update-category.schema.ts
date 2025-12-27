@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { successResponseSchema } from '../common/success-response.schema';
+import { categorySchema } from './category.schema';
 
 export const updateCategorySchema = z.object({
   name: z
@@ -9,4 +11,7 @@ export const updateCategorySchema = z.object({
     .optional(),
 });
 
+export const updateCategoryResponseSchema = successResponseSchema(categorySchema);
+
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
+export type UpdateCategoryResponse = z.infer<typeof updateCategoryResponseSchema>;
