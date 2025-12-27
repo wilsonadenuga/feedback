@@ -23,7 +23,7 @@ export class CategoryRepository {
       where: {
         project_id: projectId,
       },
-      orderBy: [{ is_default: 'desc' }, { created_at: 'asc' }],
+      orderBy: { created_at: 'desc' },
     });
   }
 
