@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   Query,
@@ -9,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { FeedbackService } from '../services/feedback.service';
-import { CreateFeedbackDto, GetFeedbacksDto } from '../dto';
+import {
+  CreateFeedbackDto,
+  GetFeedbacksDto,
+  UpdateFeedbackStatusDto,
+} from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ResponseHelper, createPaginationMeta } from '../../../common/helpers';
 import { FeedbackSwagger } from '../../../swagger/feedback.swagger';
@@ -45,6 +50,18 @@ export class FeedbackController {
       result.feedbacks,
       meta,
       'Feedbacks retrieved successfully',
+    );
+  }
+
+  @Patch(':feedback_id/status')
+  async updateStatus(
+    @Param('feedback_id') feedbackId: string,
+    @Body() dto: UpdateFeedbackStatusDto,
+  ) {
+    const feedback = await this.feedbackService.updateStatus(feedbackId, dto);
+    return ResponseHelper.success(
+      feedback,
+      'Feedback status updated successfully',
     );
   }
 }

@@ -82,4 +82,26 @@ export class FeedbackRepository {
       total,
     };
   }
+
+  async updateStatus(id: string, status: string) {
+    return this.prisma.feedback.update({
+      where: { id },
+      data: { status },
+      include: {
+        labels: {
+          include: {
+            label: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                is_default: true,
+              },
+            },
+          },
+        },
+        project: true,
+      },
+    });
+  }
 }

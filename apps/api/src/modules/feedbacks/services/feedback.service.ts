@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { FeedbackRepository } from '../repositories/feedback.repository';
-import { CreateFeedbackDto, GetFeedbacksDto } from '../dto';
+import {
+  CreateFeedbackDto,
+  GetFeedbacksDto,
+  UpdateFeedbackStatusDto,
+} from '../dto';
 import { Prisma } from '../../../../generated/client/client';
 
 @Injectable()
@@ -85,5 +89,15 @@ export class FeedbackService {
       limit: dto.limit,
       total_pages: Math.ceil(result.total / dto.limit),
     };
+  }
+
+  async updateStatus(feedbackId: string, dto: UpdateFeedbackStatusDto) {
+    const feedback = await this.feedbackRepository.findById(feedbackId);
+
+    if (!feedback) {
+      throw new NotFoundException('Feedback not found');
+    }
+
+    return this.feedbackRepository.updateStatus(feedbackId, dto.status);
   }
 }

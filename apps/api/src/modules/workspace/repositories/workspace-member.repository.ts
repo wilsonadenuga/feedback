@@ -17,7 +17,7 @@ export class WorkspaceMemberRepository {
     });
   }
 
-  async findByUserAndWorkspace(userId: string, workspaceId: string) {
+  async checkUserBelongsToWorkspace(userId: string, workspaceId: string) {
     return this.prisma.workspaceMember.findFirst({
       where: {
         user_id: userId,

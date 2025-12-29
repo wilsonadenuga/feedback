@@ -13,7 +13,7 @@ export class WorkspaceMemberService {
   }
 
   async checkUserBelongsToWorkspace(userId: string, workspaceId: string) {
-    return this.workspaceMemberRepository.findByUserAndWorkspace(
+    return this.workspaceMemberRepository.checkUserBelongsToWorkspace(
       userId,
       workspaceId,
     );
