@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WorkspaceRepository } from '../repositories/workspace.repository';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
-import { Prisma } from '../../../../generated/client/browser';
 import { WORKSPACE_ROLES } from '@feedback/schema';
 import { generateSlug } from '../../../common/helpers';
 
@@ -16,7 +15,7 @@ export class WorkspaceService {
   async create(userId: string, data: CreateWorkspaceDto) {
     const defaultLabels = this.configService.get<string[]>('labels.defaults');
 
-    const createData: Prisma.WorkspaceCreateInput = {
+    const createData = {
       name: data.name,
       logo_url: data.logo_url,
       owner: {
@@ -27,7 +26,7 @@ export class WorkspaceService {
       members: {
         create: {
           user_id: userId,
-          role: WORKSPACE_ROLES.ADMIN,
+          role: WORKSPACE_ROLES.OWNER,
         },
       },
       projects: {
@@ -69,12 +68,10 @@ export class WorkspaceService {
       throw new NotFoundException('Workspace not found');
     }
 
-    const updateData: Prisma.WorkspaceUpdateInput = {
+    return this.workspaceRepository.update(workspaceId, {
       name: data.name,
       logo_url: data.logo_url,
-    };
-
-    return this.workspaceRepository.update(workspaceId, updateData);
+    });
   }
 
   async delete(workspaceId: string): Promise<void> {
