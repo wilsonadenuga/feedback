@@ -7,13 +7,13 @@ enablePrePostScripts: true
 catalog:
   typescript: ^5.9.3
   zod: ^4.1.13
+  prettier: ^3.4.2
 
 catalogs:
-  linting:
-    "@eslint/js": ^9.39.1
-    "@typescript-eslint/eslint-plugin": ^8.49.0
-    "@typescript-eslint/parser": ^8.49.0
-    eslint: ^9.39.1
-    eslint-config-prettier: ^9.1.0
-    eslint-plugin-prettier: ^5.2.1
-    prettier: ^3.3.3
+  react:
+    react: ^19.2.1
+    react-dom: ^19.2.1
+    "@types/react": ^19.2.7
+    "@types/react-dom": ^19.2.3
+  next:
+    next: 16.0.10

@@ -8,24 +8,26 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\" --ignore-path ../../.gitignore",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@feedback/ui": "workspace:*",
     "lucide-react": "^0.475.0",
-    "next": "16.0.10",
+    "next": "catalog:next",
     "next-themes": "^0.4.6",
-    "react": "^19.2.1",
-    "react-dom": "^19.2.1"
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
   },
   "devDependencies": {
     "@feedback/eslint-config": "workspace:^",
     "@feedback/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^20.19.25",
-    "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
     "eslint": "^9.39.1",
+    "prettier": "catalog:",
     "typescript": "^5.9.3"
   }
 }
