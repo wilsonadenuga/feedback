@@ -27,7 +27,7 @@ export const WORKSPACE_ROLES = {
 export type WorkspaceRole =
   (typeof WORKSPACE_ROLES)[keyof typeof WORKSPACE_ROLES];
 
-export const workspaceRoleSchema = z.enum(['admin']);
+export const workspaceRoleSchema = z.enum(['admin', 'member', 'viewer']);
 
 export const isValidWorkspaceRole = (role: string): role is WorkspaceRole => {
   return Object.values(WORKSPACE_ROLES).includes(role as WorkspaceRole);

@@ -9,7 +9,16 @@ export class WorkspaceMemberService {
   ) {}
 
   async create(workspaceId: string, data: AddWorkspaceMemberDto) {
-    return this.workspaceMemberRepository.create(workspaceId, data);
+    return this.workspaceMemberRepository.create({
+      workspace: {
+        connect: { id: workspaceId },
+      },
+      user: {
+        connect: { id: data.user_id },
+      },
+      role: data.role,
+      display_name: data.display_name,
+    });
   }
 
   async checkUserBelongsToWorkspace(userId: string, workspaceId: string) {

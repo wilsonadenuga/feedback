@@ -3,6 +3,8 @@ export * from './common';
 export * from './user';
 export * from './workspace';
 export * from './workspace-member';
+export * from './workspace-invite';
 export * from './projects';
 export * from './labels';
 export * from './feedbacks';
+export * from './token';

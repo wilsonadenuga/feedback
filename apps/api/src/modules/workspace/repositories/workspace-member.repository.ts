@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { AddWorkspaceMemberDto } from '../dto';
+import { Prisma } from '../../../../generated/client/client';
 
 @Injectable()
 export class WorkspaceMemberRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(workspaceId: string, data: AddWorkspaceMemberDto) {
+  async create(data: Prisma.WorkspaceMemberCreateInput) {
     return this.prisma.workspaceMember.create({
-      data: {
-        workspace_id: workspaceId,
-        user_id: data.user_id,
-        role: data.role,
-        display_name: data.display_name,
-      },
+      data,
     });
   }
 
@@ -28,6 +23,17 @@ export class WorkspaceMemberRepository {
         role: true,
         workspace_id: true,
         user_id: true,
+      },
+    });
+  }
+
+  async findByEmailAndWorkspace(email: string, workspaceId: string) {
+    return this.prisma.workspaceMember.findFirst({
+      where: {
+        workspace_id: workspaceId,
+        user: {
+          email,
+        },
       },
     });
   }

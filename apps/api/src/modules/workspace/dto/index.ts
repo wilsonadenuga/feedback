@@ -4,3 +4,6 @@ export * from './add-workspace-member.dto';
 export * from './get-workspace.dto';
 export * from './get-workspaces.dto';
 export * from './delete-workspace.dto';
+export * from './create-workspace-invite.dto';
+export * from './get-workspace-invites.dto';
+export * from './accept-workspace-invite.dto';
