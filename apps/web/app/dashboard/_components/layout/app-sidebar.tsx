@@ -1,0 +1,138 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import {
+  IconFolder,
+  IconInnerShadowTop,
+  IconMap2,
+  IconMessage,
+  IconSettings,
+  IconTag,
+  IconUsers,
+} from "@tabler/icons-react";
+
+import { NavUser } from "./nav-user";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@feedback/ui/components/sidebar";
+
+const workspaceItems = [
+  {
+    title: "Projects",
+    icon: IconFolder,
+    getUrl: (workspaceId: string) => `/dashboard/${workspaceId}`,
+  },
+  {
+    title: "Members",
+    icon: IconUsers,
+    getUrl: (workspaceId: string) => `/dashboard/${workspaceId}/members`,
+  },
+  {
+    title: "Settings",
+    icon: IconSettings,
+    getUrl: (_workspaceId: string) => "#",
+  },
+];
+
+const projectItems = [
+  {
+    title: "Feedbacks",
+    icon: IconMessage,
+    getUrl: (workspaceId: string, projectId: string) =>
+      `/dashboard/${workspaceId}/${projectId}/feedbacks`,
+  },
+  {
+    title: "Labels",
+    icon: IconTag,
+    getUrl: (_workspaceId: string, _projectId: string) => "#",
+  },
+  {
+    title: "Roadmaps",
+    icon: IconMap2,
+    getUrl: (_workspaceId: string, _projectId: string) => "#",
+  },
+  {
+    title: "Settings",
+    icon: IconSettings,
+    getUrl: (_workspaceId: string, _projectId: string) => "#",
+  },
+];
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const params = useParams();
+  const workspaceId = params?.workspaceId as string | undefined;
+  const projectId = params?.projectId as string | undefined;
+  return (
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
+            >
+              <Link href={workspaceId ? `/dashboard/${workspaceId}` : "#"}>
+                <IconInnerShadowTop className="size-5!" />
+                <span className="text-base font-semibold">Acme Inc.</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarMenu>
+            {workspaceItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild tooltip={item.title}>
+                  <Link href={item.getUrl(workspaceId || "")}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
+
+        {projectId && (
+          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel>Project</SidebarGroupLabel>
+            <SidebarMenu>
+              {projectItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href={
+                        workspaceId && projectId
+                          ? item.getUrl(workspaceId, projectId)
+                          : "#"
+                      }
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+    </Sidebar>
+  );
+}

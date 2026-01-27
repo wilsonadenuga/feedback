@@ -4,7 +4,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@feedback/ui/*": ["../../packages/ui/src/*"]
+      "@feedback/ui/*": ["../../packages/ui/src/*"],
+      "@feedback/schema": ["../../packages/schema/src/index.ts"],
+      "@feedback/schema/*": ["../../packages/schema/src/*"]
     },
     "plugins": [
       {
