@@ -11,13 +11,6 @@ import {
 } from "@/hooks/use-auth";
 import { Button } from "@feedback/ui/components/button";
 import { Input } from "@feedback/ui/components/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@feedback/ui/components/card";
 import { VerifyCodeDialog } from "../_components/verify-code-dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,13 +24,21 @@ export default function RegisterPage() {
   const confirmEmailMutation = useConfirmEmail();
   const resendMutation = useResendVerification();
 
-  const form = useForm<RegisterInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
+    mode: "all",
+    reValidateMode: "onChange",
     defaultValues: {
       name: "",
       email: "",
     },
   });
+
+  console.log("RegisterPage render", errors);
 
   const onSubmit = (data: RegisterInput) => {
     registerMutation.mutate(data, {
@@ -66,64 +67,48 @@ export default function RegisterPage() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Create Account</CardTitle>
-            <CardDescription>
-              Enter your information to create a new account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <Input
-                  {...form.register("name")}
-                  placeholder="Full name"
-                  type="text"
-                />
-                {form.formState.errors.name ? (
-                  <p className="text-sm text-red-500 mt-1">
-                    {form.formState.errors.name.message}
-                  </p>
-                ) : null}
-              </div>
+      <div className="w-full max-w-md space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">Create Account</h1>
+          <p className="text-muted-foreground">
+            Enter your information to create a new account
+          </p>
+        </div>
 
-              <div>
-                <Input
-                  {...form.register("email")}
-                  placeholder="Email address"
-                  type="email"
-                />
-                {form.formState.errors.email ? (
-                  <p className="text-sm text-red-500 mt-1">
-                    {form.formState.errors.email.message}
-                  </p>
-                ) : null}
-              </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            {...register("name")}
+            label="Name"
+            placeholder="Enter your name"
+            type="text"
+            error={errors.name}
+          />
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={registerMutation.isPending}
-              >
-                {registerMutation.isPending
-                  ? "Creating Account..."
-                  : "Create Account"}
-              </Button>
+          <Input
+            {...register("email")}
+            label="Email"
+            placeholder="Enter your email"
+            type="email"
+            error={errors.email}
+          />
 
-              <div className="text-center text-sm">
-                Already have an account?{" "}
-                <Link
-                  href="/auth/login"
-                  className="text-primary hover:underline"
-                >
-                  Sign in
-                </Link>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={registerMutation.isPending}
+          >
+            {registerMutation.isPending
+              ? "Creating Account..."
+              : "Create Account"}
+          </Button>
+
+          <div className="text-center text-sm">
+            Already have an account?{" "}
+            <Link href="/auth/login" className="text-primary hover:underline">
+              Sign in
+            </Link>
+          </div>
+        </form>
       </div>
 
       <VerifyCodeDialog

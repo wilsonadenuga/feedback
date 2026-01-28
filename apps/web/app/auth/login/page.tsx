@@ -11,13 +11,6 @@ import {
 } from "@/hooks/use-auth";
 import { Button } from "@feedback/ui/components/button";
 import { Input } from "@feedback/ui/components/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@feedback/ui/components/card";
 import { VerifyCodeDialog } from "../_components/verify-code-dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -65,51 +58,41 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>
-              Enter your email to receive a login code
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <Input
-                  {...form.register("email")}
-                  placeholder="Email address"
-                  type="email"
-                />
-                {form.formState.errors.email ? (
-                  <p className="text-sm text-red-500 mt-1">
-                    {form.formState.errors.email.message}
-                  </p>
-                ) : null}
-              </div>
+      <div className="w-full max-w-md space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold">Welcome Back</h1>
+          <p className="text-muted-foreground">
+            Enter your email to receive a login code
+          </p>
+        </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loginMutation.isPending}
-              >
-                {loginMutation.isPending
-                  ? "Sending Code..."
-                  : "Send Login Code"}
-              </Button>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            {...form.register("email")}
+            label="Email"
+            placeholder="Enter your email"
+            type="email"
+            error={form.formState.errors.email}
+          />
 
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/auth/register"
-                  className="text-primary hover:underline"
-                >
-                  Create one
-                </Link>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={loginMutation.isPending}
+          >
+            {loginMutation.isPending ? "Sending Code..." : "Send Login Code"}
+          </Button>
+
+          <div className="text-center text-sm">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/auth/register"
+              className="text-primary hover:underline"
+            >
+              Create one
+            </Link>
+          </div>
+        </form>
       </div>
 
       <VerifyCodeDialog
