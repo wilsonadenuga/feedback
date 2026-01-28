@@ -132,10 +132,10 @@ export class AuthService {
   private async generateTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
 
-    const refreshTokenSecret = this.configService.get<string>(
+    const refreshTokenSecret = this.configService.getOrThrow<string>(
       'jwt.refreshToken.secret',
     );
-    const refreshTokenExpiresIn = this.configService.get<string>(
+    const refreshTokenExpiresIn = this.configService.getOrThrow<number>(
       'jwt.refreshToken.expiresIn',
     );
 
@@ -143,7 +143,7 @@ export class AuthService {
       this.jwtService.signAsync(payload),
       this.jwtService.signAsync(payload, {
         secret: refreshTokenSecret,
-        expiresIn: Number(refreshTokenExpiresIn),
+        expiresIn: refreshTokenExpiresIn,
       }),
     ]);
 

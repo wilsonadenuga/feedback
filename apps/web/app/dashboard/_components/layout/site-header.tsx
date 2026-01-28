@@ -22,6 +22,8 @@ import {
 } from "@feedback/ui/components/dropdown-menu";
 import { Separator } from "@feedback/ui/components/separator";
 import { SidebarTrigger } from "@feedback/ui/components/sidebar";
+import { useAuth } from "@/contexts/auth";
+import { useRouter } from "next/navigation";
 
 import { ThemeToggle } from "./theme-toggle";
 
@@ -38,6 +40,23 @@ const projects = [
 ];
 
 export function SiteHeader() {
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
+  const getUserInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
@@ -97,10 +116,11 @@ export function SiteHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="gap-2 pl-1">
                 <Avatar className="size-6">
-                  <AvatarImage src="/avatars/shadcn.jpg" alt="shadcn" />
-                  <AvatarFallback>SC</AvatarFallback>
+                  <AvatarFallback>
+                    {user ? getUserInitials(user.name) : "U"}
+                  </AvatarFallback>
                 </Avatar>
-                <span className="hidden sm:inline">shadcn</span>
+                <span className="hidden sm:inline">{user?.name || "User"}</span>
                 <IconChevronDown className="size-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
@@ -108,13 +128,16 @@ export function SiteHeader() {
               <DropdownMenuLabel>
                 <div className="flex items-center gap-2">
                   <Avatar className="size-8">
-                    <AvatarImage src="/avatars/shadcn.jpg" alt="shadcn" />
-                    <AvatarFallback>SC</AvatarFallback>
+                    <AvatarFallback>
+                      {user ? getUserInitials(user.name) : "U"}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-0.5">
-                    <div className="text-sm font-medium">shadcn</div>
+                    <div className="text-sm font-medium">
+                      {user?.name || "User"}
+                    </div>
                     <div className="text-muted-foreground text-xs">
-                      m@example.com
+                      {user?.email || "user@example.com"}
                     </div>
                   </div>
                 </div>
@@ -130,7 +153,7 @@ export function SiteHeader() {
               </DropdownMenuItem>
               <ThemeToggle />
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
                 <IconLogout className="size-4" />
                 Log out
               </DropdownMenuItem>
