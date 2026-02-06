@@ -1,5 +1,7 @@
 "use client";
 
+import { ThemeToggle } from "../../components/theme-toggle";
+
 export default function AuthLayout({
   children,
 }: {
@@ -19,6 +21,9 @@ export default function AuthLayout({
           }}
         />
 
+        <div className="absolute top-8 right-8 z-20">
+          <ThemeToggle />
+        </div>
         <div className="relative z-10 p-12 max-w-lg">
           <blockquote className="mb-8">
             <svg
