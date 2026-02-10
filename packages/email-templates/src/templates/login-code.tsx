@@ -32,7 +32,7 @@ export const LoginCode = ({ code }: LoginCodeProps) => (
               alt="Slack"
             />
           </Section>
-          <Heading className="text-[#1d1c1d] text-4xl font-bold my-[30px] mx-0 p-0 leading-[42px]">
+          <Heading className="text-[#1d1c1d] text-4xl font-bold my-7.5 mx-0 p-0 leading-10.5">
             Your login code
           </Heading>
           <Text className="text-xl mb-7.5">
@@ -40,8 +40,8 @@ export const LoginCode = ({ code }: LoginCodeProps) => (
             sign in.
           </Text>
 
-          <Section className="bg-[rgb(245,244,245)] rounded mb-[30px] py-10 px-[10px]">
-            <Text className="text-3xl leading-[24px] text-center align-middle">
+          <Section className="bg-[rgb(245,244,245)] rounded mb-7.5 py-10 px-2.5">
+            <Text className="text-3xl leading-6 text-center align-middle">
               {code}
             </Text>
           </Section>
@@ -89,7 +89,7 @@ export const LoginCode = ({ code }: LoginCodeProps) => (
             >
               Slack Community
             </Link>
-            <Text className="text-xs leading-[15px] text-left mb-[50px] text-[#b7b7b7]">
+            <Text className="text-xs leading-3.75 text-left mb-12.5 text-[#b7b7b7]">
               ©2022 Slack Technologies, LLC, a Salesforce company. <br />
               500 Howard Street, San Francisco, CA 94105, USA <br />
               <br />

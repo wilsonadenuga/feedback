@@ -9,6 +9,7 @@ import {
   ConfirmEmailInput,
   ConfirmEmailResponse,
   ResendVerificationResponse,
+  ResendLoginCodeResponse,
   SuccessResponse,
 } from "@feedback/schema";
 import { authService } from "@/services/auth.service";
@@ -84,6 +85,18 @@ export const useResendVerification = () => {
     string
   >({
     mutationFn: (email) => authService.resendVerification(email),
+    onSuccess: (data) => {
+      toast.success(data.message);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+export const useResendLoginCode = () => {
+  return useMutation<SuccessResponse<ResendLoginCodeResponse>, Error, string>({
+    mutationFn: (email) => authService.resendLoginCode(email),
     onSuccess: (data) => {
       toast.success(data.message);
     },

@@ -16,6 +16,7 @@ import {
   RegisterDto,
   ConfirmEmailDto,
   ResendVerificationDto,
+  ResendLoginCodeDto,
   LoginDto,
   LoginVerifyDto,
 } from '../dto';
@@ -164,6 +165,35 @@ export class AuthService {
       accessToken,
       refreshToken,
       expiresIn: 15 * 60,
+    };
+  }
+
+  async resendLoginCode(dto: ResendLoginCodeDto) {
+    const { email } = dto;
+    const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      return {
+        expires_in: this.CODE_EXPIRY_MINUTES * 60,
+      };
+    }
+
+    if (user.status !== UserStatus.ACTIVE) {
+      throw new UnauthorizedException('Please verify your email first');
+    }
+
+    const code = this.generateCode();
+    const ttlMs = this.CODE_EXPIRY_MINUTES * 60 * 1000;
+
+    await this.cache.set(`otp:login:${user.id}`, code, ttlMs);
+
+    this.eventEmitter.emit(
+      'user.login.code',
+      new UserLoginCodeEvent(user.email, code),
+    );
+
+    return {
+      expires_in: this.CODE_EXPIRY_MINUTES * 60,
     };
   }
 

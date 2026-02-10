@@ -6,6 +6,7 @@ import {
   ConfirmEmailInput,
   ConfirmEmailResponse,
   ResendVerificationResponse,
+  ResendLoginCodeResponse,
   User,
   SuccessResponse,
 } from "@feedback/schema";
@@ -38,6 +39,12 @@ export const authService = {
     email: string,
   ): Promise<SuccessResponse<ResendVerificationResponse>> => {
     return apiClient.post("/v1/auth/resend-verification-email", { email });
+  },
+
+  resendLoginCode: (
+    email: string,
+  ): Promise<SuccessResponse<ResendLoginCodeResponse>> => {
+    return apiClient.post("/v1/auth/login/resend-code", { email });
   },
 
   getMe: (): Promise<SuccessResponse<User>> => {
