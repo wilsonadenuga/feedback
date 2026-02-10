@@ -5,6 +5,7 @@ import {
   RegisterDto,
   ConfirmEmailDto,
   ResendVerificationDto,
+  ResendLoginCodeDto,
   LoginDto,
   LoginVerifyDto,
 } from '../dto';
@@ -50,6 +51,16 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
     const result = await this.authService.login(dto);
+    return ResponseHelper.success(
+      result,
+      'If an account exists, login code has been sent to your email',
+    );
+  }
+
+  @Post('login/resend-code')
+  @HttpCode(HttpStatus.OK)
+  async resendLoginCode(@Body() dto: ResendLoginCodeDto) {
+    const result = await this.authService.resendLoginCode(dto);
     return ResponseHelper.success(
       result,
       'If an account exists, login code has been sent to your email',
