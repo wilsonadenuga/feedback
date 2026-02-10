@@ -18,14 +18,18 @@ type VerifyCodeForm = z.infer<typeof verifyCodeSchema>;
 
 interface VerifyCodeInputProps {
   onSubmit: (code: string) => void;
+  isSubmitting?: boolean;
 }
 
-export function VerifyCodeInput({ onSubmit }: VerifyCodeInputProps) {
+export function VerifyCodeInput({
+  onSubmit,
+  isSubmitting,
+}: VerifyCodeInputProps) {
   const {
     control,
     setValue,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid },
   } = useForm<VerifyCodeForm>({
     resolver: zodResolver(verifyCodeSchema),
     mode: "onChange",
@@ -60,7 +64,7 @@ export function VerifyCodeInput({ onSubmit }: VerifyCodeInputProps) {
             <InputOTPSlot index={5} />
           </InputOTPGroup>
         </InputOTP>
-        {code.length > 0 && code.length < 6 && (
+        {code?.length > 0 && code.length < 6 && (
           <p className="text-sm text-muted-foreground">
             Enter {6 - code.length} more digit{6 - code.length !== 1 ? "s" : ""}
           </p>

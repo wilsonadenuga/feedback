@@ -56,7 +56,10 @@ export default function VerifyOtpPage() {
         </p>
       </div>
 
-      <VerifyCodeInput onSubmit={handleSubmit} />
+      <VerifyCodeInput
+        isSubmitting={loginVerifyMutation.isPending}
+        onSubmit={handleSubmit}
+      />
 
       <div className="flex items-center justify-between">
         <Button

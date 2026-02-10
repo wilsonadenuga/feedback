@@ -55,7 +55,10 @@ export default function VerifyCodePage() {
         </p>
       </div>
 
-      <VerifyCodeInput onSubmit={handleSubmit} />
+      <VerifyCodeInput
+        isSubmitting={confirmEmailMutation.isPending}
+        onSubmit={handleSubmit}
+      />
 
       <div className="flex items-center justify-between">
         <Button
