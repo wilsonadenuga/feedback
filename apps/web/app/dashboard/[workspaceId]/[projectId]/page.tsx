@@ -6,7 +6,7 @@ export default async function ProjectPage({
   const { workspaceId, projectId } = await params;
 
   return (
-    <div className="flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6">
+    <>
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">
           Project Overview
@@ -20,6 +20,6 @@ export default async function ProjectPage({
           Project overview page - Coming soon
         </p>
       </div>
-    </div>
+    </>
   );
 }

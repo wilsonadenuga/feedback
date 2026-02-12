@@ -21,7 +21,6 @@ import { UserLoginCodeEventListener } from './listeners/user-login-code.listener
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.get('jwt.secret'),
-        signOptions: { expiresIn: config.get('jwt.expiryTime') },
       }),
     }),
     BullModule.registerQueue({

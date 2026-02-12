@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { ThemeToggle } from "../../components/theme-toggle";
 
 export default function AuthLayout({
@@ -10,7 +11,7 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen bg-background flex">
       <div className="w-full lg:w-[45%] flex items-center justify-center p-4 lg:p-8 bg-zinc-50/50 dark:bg-background border-r border-zinc-200 dark:border-zinc-800">
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
       </div>
 
       <div className="hidden lg:flex lg:w-[55%] items-center justify-center relative overflow-hidden bg-white dark:bg-zinc-950">
