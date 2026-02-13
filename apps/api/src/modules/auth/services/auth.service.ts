@@ -12,6 +12,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { UserService } from '../../user/services/user.service';
 import { WorkspaceService } from '../../workspace/services/workspace.service';
+import { v4 as uuidv4 } from 'uuid';
 import {
   RegisterDto,
   ConfirmEmailDto,
@@ -140,13 +141,8 @@ export class AuthService {
       'jwt.refreshToken.expiresIn',
     );
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload),
-      this.jwtService.signAsync(payload, {
-        secret: refreshTokenSecret,
-        expiresIn: refreshTokenExpiresIn,
-      }),
-    ]);
+    const accessToken = await this.jwtService.signAsync(payload);
+    const refreshToken = uuidv4();
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
