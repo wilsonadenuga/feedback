@@ -64,6 +64,7 @@
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.15",
     "@types/supertest": "^6.0.3",
+    "eslint": "catalog:",
     "jest": "^29.7.0",
     "prettier": "catalog:",
     "prisma": "^7.0.1",

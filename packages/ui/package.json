@@ -48,7 +48,7 @@
     "@types/node": "^20.19.9",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
-    "eslint": "^9.32.0",
+    "eslint": "catalog:",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.2"
   },

@@ -8,6 +8,7 @@ catalog:
   typescript: ^5.9.3
   zod: ^4.1.13
   prettier: ^3.4.2
+  eslint: ^9.39.1
 
 catalogs:
   react:

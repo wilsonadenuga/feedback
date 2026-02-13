@@ -36,7 +36,7 @@
     "@types/node": "^20.19.25",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
-    "eslint": "^9.39.1",
+    "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "^5.9.3"
   }
