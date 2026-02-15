@@ -46,7 +46,7 @@ interface DataTableProps<TData, TValue> {
   getRowId?: (row: TData) => string;
   enableRowSelection?: boolean;
   enablePagination?: boolean;
-  meta?: any;
+  meta?: Record<string, unknown>;
 }
 
 export function DataTable<TData, TValue>({
@@ -69,6 +69,7 @@ export function DataTable<TData, TValue>({
     pageSize: 10,
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

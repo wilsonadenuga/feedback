@@ -6,11 +6,7 @@ import {
   IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@feedback/ui/components/avatar";
+import { Avatar, AvatarFallback } from "@feedback/ui/components/avatar";
 import { Button } from "@feedback/ui/components/button";
 import {
   DropdownMenu,

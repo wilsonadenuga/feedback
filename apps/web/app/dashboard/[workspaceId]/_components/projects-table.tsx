@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { IconDotsVertical, IconSearch } from "@tabler/icons-react";
 import { type ColumnDef } from "@tanstack/react-table";
+import type { Project } from "@feedback/schema";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { DataTable } from "@/components/data-table";
 import { Button } from "@feedback/ui/components/button";
@@ -19,22 +19,18 @@ import {
 } from "@feedback/ui/components/dropdown-menu";
 import { Input } from "@feedback/ui/components/input";
 
-export const projectSchema = z.object({
-  id: z.string(),
-  workspace_id: z.string(),
-  name: z.string(),
-  description: z.string().nullable(),
-  created_at: z.string(),
-  updated_at: z.string(),
-});
+type ProjectsTableMeta = {
+  workspaceId?: string;
+};
 
-const columns: ColumnDef<z.infer<typeof projectSchema>>[] = [
+const columns: ColumnDef<Project>[] = [
   {
     accessorKey: "name",
     header: "Name",
     cell: ({ row, table }) => {
       const shortId = row.original.id.substring(0, 8);
-      const workspaceId = (table.options.meta as any)?.workspaceId;
+      const workspaceId = (table.options.meta as ProjectsTableMeta | undefined)
+        ?.workspaceId;
       return (
         <Link
           href={
@@ -111,11 +107,7 @@ const columns: ColumnDef<z.infer<typeof projectSchema>>[] = [
   },
 ];
 
-export function ProjectsTable({
-  data,
-}: {
-  data: z.infer<typeof projectSchema>[];
-}) {
+export function ProjectsTable({ data }: { data: Project[] }) {
   const params = useParams();
   const workspaceId = params?.workspaceId as string | undefined;
   const [searchQuery, setSearchQuery] = React.useState("");

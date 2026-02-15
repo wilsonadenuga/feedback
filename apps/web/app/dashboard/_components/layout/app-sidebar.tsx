@@ -40,7 +40,10 @@ const workspaceItems = [
   {
     title: "Settings",
     icon: IconSettings,
-    getUrl: (_workspaceId: string) => "#",
+    getUrl: (workspaceId: string) => {
+      void workspaceId;
+      return "#";
+    },
   },
 ];
 
@@ -54,17 +57,29 @@ const projectItems = [
   {
     title: "Labels",
     icon: IconTag,
-    getUrl: (_workspaceId: string, _projectId: string) => "#",
+    getUrl: (workspaceId: string, projectId: string) => {
+      void workspaceId;
+      void projectId;
+      return "#";
+    },
   },
   {
     title: "Roadmaps",
     icon: IconMap2,
-    getUrl: (_workspaceId: string, _projectId: string) => "#",
+    getUrl: (workspaceId: string, projectId: string) => {
+      void workspaceId;
+      void projectId;
+      return "#";
+    },
   },
   {
     title: "Settings",
     icon: IconSettings,
-    getUrl: (_workspaceId: string, _projectId: string) => "#",
+    getUrl: (workspaceId: string, projectId: string) => {
+      void workspaceId;
+      void projectId;
+      return "#";
+    },
   },
 ];
 
