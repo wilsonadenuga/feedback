@@ -15,6 +15,9 @@ const envSchema = z.object({
   JWT_REFRESH_TOKEN_EXPIRATION: z.coerce.number().default(604800),
   REDIS_URL: z.url(),
   RESEND_API_KEY: z.string().min(1),
+  GOOGLE_CLIENT_ID: z.string().min(32),
+  GOOGLE_CLIENT_SECRET: z.string().min(32),
+  GOOGLE_CALLBACK_URL: z.url(),
   DEFAULT_LABELS: z
     .string()
     .default('Feature Request,Bug,Improvement')
@@ -67,5 +70,10 @@ export default () => ({
   },
   labels: {
     defaults: env.DEFAULT_LABELS,
+  },
+  google: {
+    id: env.GOOGLE_CLIENT_ID,
+    secret: env.GOOGLE_CLIENT_SECRET,
+    url: env.GOOGLE_CALLBACK_URL
   },
 });
