@@ -64,11 +64,6 @@ export function VerifyCodeInput({
             <InputOTPSlot index={5} />
           </InputOTPGroup>
         </InputOTP>
-        {code?.length > 0 && code.length < 6 && (
-          <p className="text-sm text-muted-foreground">
-            Enter {6 - code.length} more digit{6 - code.length !== 1 ? "s" : ""}
-          </p>
-        )}
         {errors.code && (
           <p className="text-sm text-destructive">{errors.code.message}</p>
         )}

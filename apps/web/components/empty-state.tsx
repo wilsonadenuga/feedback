@@ -19,25 +19,20 @@ export function EmptyState({
     <div
       {...containerProps}
       className={cn(
-        "flex flex-col items-center justify-center py-12 px-4 text-center border rounded-md bg-muted w-full",
+        "flex flex-col items-center justify-center pt-0 px-4 text-center border rounded-md bg-muted w-full relative pb-36",
         containerProps?.className,
       )}
     >
-      <div className="mb-4">
-        <Image
-          src="/images/welcome.png"
-          alt="no-content"
-          width={350}
-          height={50}
-        />
+      <Image src="/images/empty.png" alt="no-content" width={350} height={50} />
+      <div className="absolute bottom-0 pb-12 flex flex-col items-center justify-center w-full">
+        <h3 className="text-lg font-semibold mb-2">{title}</h3>
+        {description && (
+          <p className="text-sm text-muted-foreground max-w-sm mb-6">
+            {description}
+          </p>
+        )}
+        {action && <div>{action}</div>}
       </div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      {description && (
-        <p className="text-sm text-muted-foreground max-w-sm mb-6">
-          {description}
-        </p>
-      )}
-      {action && <div>{action}</div>}
     </div>
   );
 }

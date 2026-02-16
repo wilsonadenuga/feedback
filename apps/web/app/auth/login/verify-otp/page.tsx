@@ -44,11 +44,9 @@ export default function VerifyOtpPage() {
     <div className="w-full max-w-md space-y-8">
       <div className="space-y-3">
         <h1 className="text-3xl font-bold tracking-tight">Enter your code</h1>
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground truncate inline-block max-w-full mb-0">
           We&apos;ve sent a 6-digit login code to{" "}
-          <span className="font-medium text-foreground truncate inline-block max-w-50 align-bottom">
-            {email}
-          </span>
+          <span className="font-medium text-foreground">{email}</span>
         </p>
         <p className="text-sm text-muted-foreground flex items-center gap-1.5">
           <span className="text-lg">🔒</span>

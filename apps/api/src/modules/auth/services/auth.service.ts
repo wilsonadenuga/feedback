@@ -133,6 +133,9 @@ export class AuthService {
   private async generateTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
 
+    const accessTokenExpiresIn = this.configService.getOrThrow<number>(
+      'jwt.accessToken.expiresIn',
+    );
     const refreshTokenSecret = this.configService.getOrThrow<string>(
       'jwt.refreshToken.secret',
     );
@@ -164,7 +167,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
-      expiresIn: 15 * 60,
+      expiresIn: accessTokenExpiresIn,
     };
   }
 
