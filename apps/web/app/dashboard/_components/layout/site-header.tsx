@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  IconCheck,
   IconChevronDown,
   IconLogout,
-  IconPlus,
   IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react";
@@ -20,30 +18,18 @@ import {
 } from "@feedback/ui/components/dropdown-menu";
 import { Separator } from "@feedback/ui/components/separator";
 import { SidebarTrigger } from "@feedback/ui/components/sidebar";
-import { Skeleton } from "@feedback/ui/components/skeleton";
 import { useAuth } from "@/contexts/auth";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useDashboardSelection } from "./dashboard-selection-provider";
-import { CreateProjectDialog } from "../project/create-project-dialog";
-import { CreateWorkspaceDialog } from "../workspace/create-workspace-dialog";
+import { ProjectSelect } from "./project-select";
 import { ThemeToggle } from "./theme-toggle";
+import { WorkspaceSelect } from "./workspace-select";
 
 export function SiteHeader() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const {
-    workspaceId,
-    workspaces,
-    projects,
-    selectedWorkspace,
-    selectedProject,
-    isLoadingWorkspaces,
-    isLoadingProjects,
-    setWorkspace,
-    setProject,
-  } = useDashboardSelection();
+  const { workspaceId, isLoadingWorkspaces } = useDashboardSelection();
   const isWorkspaceSelectionScreen = !workspaceId;
 
   const handleLogout = () => {
@@ -69,137 +55,12 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <div className="flex items-center gap-2">
-          {isWorkspaceSelectionScreen || isLoadingWorkspaces ? (
+          {!isWorkspaceSelectionScreen && !isLoadingWorkspaces ? (
             <>
-              <Skeleton className="h-8 w-36 rounded-md" />
-              <Skeleton className="h-8 w-32 rounded-md" />
+              <WorkspaceSelect />
+              <ProjectSelect />
             </>
-          ) : (
-            <>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    <span className="font-medium">
-                      {selectedWorkspace?.name || "Select workspace"}
-                    </span>
-                    <IconChevronDown className="size-4 opacity-50" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  <Link
-                    href="/dashboard"
-                    className="block text-[10px] font-medium tracking-wide uppercase text-muted-foreground px-2 py-1 hover:text-foreground"
-                  >
-                    Workspace
-                  </Link>
-                  <DropdownMenuSeparator />
-                  {workspaces.length === 0 ? (
-                    <DropdownMenuItem disabled className="text-xs">
-                      No workspaces
-                    </DropdownMenuItem>
-                  ) : (
-                    workspaces.map((workspace) => (
-                      <DropdownMenuItem
-                        key={workspace.id}
-                        onClick={() => setWorkspace(workspace.id)}
-                        className="text-xs justify-between"
-                      >
-                        <span>{workspace.name}</span>
-                        <IconCheck
-                          className={`size-3.5 ${
-                            workspace.id === workspaceId
-                              ? "opacity-100"
-                              : "opacity-0"
-                          }`}
-                        />
-                      </DropdownMenuItem>
-                    ))
-                  )}
-                  <DropdownMenuSeparator />
-                  <CreateWorkspaceDialog
-                    onCreated={(workspace) => {
-                      router.push(`/dashboard/${workspace.id}`);
-                    }}
-                    trigger={
-                      <DropdownMenuItem
-                        onSelect={(event) => event.preventDefault()}
-                        className="text-xs justify-between"
-                      >
-                        <span>Create workspace</span>
-                        <IconPlus className="size-3.5" />
-                      </DropdownMenuItem>
-                    }
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {workspaceId && selectedProject && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="gap-1">
-                      <span className="font-medium">
-                        {selectedProject.name}
-                      </span>
-                      <IconChevronDown className="size-4 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-64">
-                    <Link
-                      href={`/dashboard/${workspaceId}`}
-                      className="block text-[10px] font-medium tracking-wide uppercase text-muted-foreground px-2 py-1 hover:text-foreground"
-                    >
-                      Project
-                    </Link>
-                    <DropdownMenuSeparator />
-                    {isLoadingProjects ? (
-                      <DropdownMenuItem disabled className="text-xs">
-                        Loading projects...
-                      </DropdownMenuItem>
-                    ) : projects.length === 0 ? (
-                      <DropdownMenuItem disabled className="text-xs">
-                        No projects
-                      </DropdownMenuItem>
-                    ) : (
-                      projects.map((project) => (
-                        <DropdownMenuItem
-                          key={project.id}
-                          onClick={() => setProject(project.id)}
-                          className="text-xs justify-between"
-                        >
-                          <span>{project.name}</span>
-                          <IconCheck
-                            className={`size-3.5 ${
-                              project.id === selectedProject.id
-                                ? "opacity-100"
-                                : "opacity-0"
-                            }`}
-                          />
-                        </DropdownMenuItem>
-                      ))
-                    )}
-                    <DropdownMenuSeparator />
-                    <CreateProjectDialog
-                      workspaceId={workspaceId}
-                      onCreated={(project) => {
-                        router.push(
-                          `/dashboard/${workspaceId}/projects/${project.id}/feedbacks`,
-                        );
-                      }}
-                      trigger={
-                        <DropdownMenuItem
-                          onSelect={(event) => event.preventDefault()}
-                          className="text-xs justify-between"
-                        >
-                          <span>Create project</span>
-                          <IconPlus className="size-3.5" />
-                        </DropdownMenuItem>
-                      }
-                    />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </>
-          )}
+          ) : null}
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm">
@@ -229,10 +90,10 @@ export function SiteHeader() {
                   </Avatar>
                   <div className="flex flex-col gap-0.5">
                     <div className="text-sm font-medium">
-                      {user?.name || "User"}
+                      {user?.name}
                     </div>
                     <div className="text-muted-foreground text-xs">
-                      {user?.email || "user@example.com"}
+                      {user?.email}
                     </div>
                   </div>
                 </div>
