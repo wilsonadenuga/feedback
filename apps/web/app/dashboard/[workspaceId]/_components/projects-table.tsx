@@ -27,7 +27,7 @@ const columns: ColumnDef<Project>[] = [
       const workspaceId = row.original.workspace_id;
       return (
         <Link
-          href={`/dashboard/${workspaceId}/${row.original.id}/feedbacks`}
+          href={`/dashboard/${workspaceId}/projects/${row.original.id}/feedbacks`}
           className="flex flex-col gap-0.5 hover:underline"
         >
           <div className="font-medium">{row.getValue("name")}</div>
