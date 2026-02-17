@@ -21,7 +21,10 @@ import { GoogleStrategy } from './strategies/google.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get('jwt.secret'),
+        secret: config.get('jwt.accessToken.secret'),
+        signOptions: {
+          expiresIn: config.get('jwt.accessToken.expiresIn'),
+        },
       }),
     }),
     BullModule.registerQueue({

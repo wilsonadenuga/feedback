@@ -10,11 +10,7 @@ import { Badge } from "@feedback/ui/components/badge";
 import { IconChevronRight } from "@tabler/icons-react";
 import { Workspace } from "@feedback/schema";
 
-interface WorkspaceCardProps {
-  workspace: Workspace;
-}
-
-export function WorkspaceCard({ workspace }: WorkspaceCardProps) {
+export function WorkspaceCard({ workspace }: { workspace: Workspace }) {
   return (
     <Link href={`/dashboard/${workspace.id}`}>
       <Card className="group cursor-pointer transition-all duration-200 hover:shadow-lg hover:border-primary/50">

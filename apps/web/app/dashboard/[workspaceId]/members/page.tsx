@@ -1,5 +1,6 @@
 import { MembersTable } from "./_components/members-table";
 import { InvitesTable } from "./_components/invites-table";
+import { workspaceInviteSchema, workspaceMemberSchema } from "@feedback/schema";
 import {
   Tabs,
   TabsContent,
@@ -11,6 +12,9 @@ import members from "./members.json";
 import invites from "./invites.json";
 
 export default function MembersPage() {
+  const membersData = workspaceMemberSchema.array().parse(members);
+  const invitesData = workspaceInviteSchema.array().parse(invites);
+
   return (
     <Tabs defaultValue="members" className="w-full">
       <div className="flex flex-col gap-4">
@@ -26,10 +30,10 @@ export default function MembersPage() {
         </TabsList>
       </div>
       <TabsContent value="members">
-        <MembersTable data={members as any} />
+        <MembersTable data={membersData} />
       </TabsContent>
       <TabsContent value="invites">
-        <InvitesTable data={invites as any} />
+        <InvitesTable data={invitesData} />
       </TabsContent>
     </Tabs>
   );

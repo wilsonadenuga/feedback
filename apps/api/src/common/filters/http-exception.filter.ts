@@ -101,10 +101,23 @@ export class HttpExceptionFilter implements ExceptionFilter {
       'errors' in exceptionResponse &&
       Array.isArray(exceptionResponse.errors)
     ) {
-      return exceptionResponse.errors.map((error: any) => ({
-        field: Array.isArray(error.path) ? error.path.join('.') : 'unknown',
-        message: error.message || 'Validation error',
-      }));
+      return exceptionResponse.errors.map((error: unknown) => {
+        if (typeof error !== 'object' || error === null) {
+          return {
+            field: 'unknown',
+            message: 'Validation error',
+          };
+        }
+
+        const errorRecord = error as Record<string, unknown>;
+        const path = errorRecord.path;
+        const message = errorRecord.message;
+
+        return {
+          field: Array.isArray(path) ? path.join('.') : 'unknown',
+          message: typeof message === 'string' ? message : 'Validation error',
+        };
+      });
     }
 
     return undefined;

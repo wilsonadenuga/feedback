@@ -25,6 +25,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@feedback/ui/components/sidebar";
+import { Skeleton } from "@feedback/ui/components/skeleton";
 
 const workspaceItems = [
   {
@@ -40,7 +41,10 @@ const workspaceItems = [
   {
     title: "Settings",
     icon: IconSettings,
-    getUrl: (_workspaceId: string) => "#",
+    getUrl: (workspaceId: string) => {
+      void workspaceId;
+      return "#";
+    },
   },
 ];
 
@@ -54,17 +58,29 @@ const projectItems = [
   {
     title: "Labels",
     icon: IconTag,
-    getUrl: (_workspaceId: string, _projectId: string) => "#",
+    getUrl: (workspaceId: string, projectId: string) => {
+      void workspaceId;
+      void projectId;
+      return "#";
+    },
   },
   {
     title: "Roadmaps",
     icon: IconMap2,
-    getUrl: (_workspaceId: string, _projectId: string) => "#",
+    getUrl: (workspaceId: string, projectId: string) => {
+      void workspaceId;
+      void projectId;
+      return "#";
+    },
   },
   {
     title: "Settings",
     icon: IconSettings,
-    getUrl: (_workspaceId: string, _projectId: string) => "#",
+    getUrl: (workspaceId: string, projectId: string) => {
+      void workspaceId;
+      void projectId;
+      return "#";
+    },
   },
 ];
 
@@ -72,6 +88,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const params = useParams();
   const workspaceId = params?.workspaceId as string | undefined;
   const projectId = params?.projectId as string | undefined;
+  const isWorkspaceSelectionScreen = !workspaceId;
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -90,23 +108,34 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-          <SidebarMenu>
-            {workspaceItems.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild tooltip={item.title}>
-                  <Link href={item.getUrl(workspaceId || "")}>
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
+        {isWorkspaceSelectionScreen ? (
+          <SidebarGroup>
+            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+            <div className="space-y-2 px-2">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+            </div>
+          </SidebarGroup>
+        ) : (
+          <SidebarGroup>
+            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+            <SidebarMenu>
+              {workspaceItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <Link href={item.getUrl(workspaceId || "")}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
 
-        {projectId && (
+        {workspaceId && projectId && (
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Project</SidebarGroupLabel>
             <SidebarMenu>

@@ -6,11 +6,7 @@ import {
   IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@feedback/ui/components/avatar";
+import { Avatar, AvatarFallback } from "@feedback/ui/components/avatar";
 import { Button } from "@feedback/ui/components/button";
 import {
   DropdownMenu,
@@ -22,8 +18,9 @@ import {
 } from "@feedback/ui/components/dropdown-menu";
 import { Separator } from "@feedback/ui/components/separator";
 import { SidebarTrigger } from "@feedback/ui/components/sidebar";
+import { Skeleton } from "@feedback/ui/components/skeleton";
 import { useAuth } from "@/contexts/auth";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { ThemeToggle } from "./theme-toggle";
 
@@ -42,6 +39,9 @@ const projects = [
 export function SiteHeader() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const workspaceId = params?.workspaceId as string | undefined;
+  const isWorkspaceSelectionScreen = !workspaceId;
 
   const handleLogout = () => {
     logout();
@@ -66,45 +66,54 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-1">
-                <span className="font-medium">Acme Inc.</span>
-                <IconChevronDown className="size-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {workspaces.map((workspace) => (
-                <DropdownMenuItem key={workspace.id}>
-                  {workspace.name}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Create workspace</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {isWorkspaceSelectionScreen ? (
+            <>
+              <Skeleton className="h-8 w-36 rounded-md" />
+              <Skeleton className="h-8 w-32 rounded-md" />
+            </>
+          ) : (
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-1">
+                    <span className="font-medium">Acme Inc.</span>
+                    <IconChevronDown className="size-4 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>Workspaces</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {workspaces.map((workspace) => (
+                    <DropdownMenuItem key={workspace.id}>
+                      {workspace.name}
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Create workspace</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="gap-1">
-                <span className="text-muted-foreground">All Projects</span>
-                <IconChevronDown className="size-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64">
-              <DropdownMenuLabel>Projects</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {projects.map((project) => (
-                <DropdownMenuItem key={project.id}>
-                  {project.name}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View all projects</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="gap-1">
+                    <span className="text-muted-foreground">All Projects</span>
+                    <IconChevronDown className="size-4 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-64">
+                  <DropdownMenuLabel>Projects</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {projects.map((project) => (
+                    <DropdownMenuItem key={project.id}>
+                      {project.name}
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>View all projects</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          )}
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm">
