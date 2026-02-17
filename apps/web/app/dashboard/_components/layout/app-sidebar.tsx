@@ -4,9 +4,12 @@ import * as React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
+  IconBook,
   IconFolder,
   IconHome,
+  IconHistory,
   IconInnerShadowTop,
+  IconMail,
   IconMap2,
   IconMessage,
   IconSettings,
@@ -26,7 +29,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@feedback/ui/components/sidebar";
-import { Skeleton } from "@feedback/ui/components/skeleton";
 
 const workspaceItems = [
   {
@@ -93,6 +95,39 @@ const projectItems = [
   },
 ];
 
+const otherItems = [
+  {
+    title: "Invites",
+    icon: IconMail,
+    getUrl: (workspaceId?: string) =>
+      workspaceId ? `/dashboard/${workspaceId}/members` : "/dashboard",
+  },
+  {
+    title: "Account Settings",
+    icon: IconSettings,
+    getUrl: (workspaceId?: string) => {
+      void workspaceId;
+      return "#";
+    },
+  },
+  {
+    title: "Docs",
+    icon: IconBook,
+    getUrl: (workspaceId?: string) => {
+      void workspaceId;
+      return "#";
+    },
+  },
+  {
+    title: "Changelog",
+    icon: IconHistory,
+    getUrl: (workspaceId?: string) => {
+      void workspaceId;
+      return "#";
+    },
+  },
+];
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const params = useParams();
   const workspaceId = params?.workspaceId as string | undefined;
@@ -117,16 +152,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {isWorkspaceSelectionScreen ? (
-          <SidebarGroup>
-            <SidebarGroupLabel>Workspace</SidebarGroupLabel>
-            <div className="space-y-2 px-2">
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-            </div>
-          </SidebarGroup>
-        ) : (
+        {!isWorkspaceSelectionScreen && (
           <SidebarGroup>
             <SidebarGroupLabel>Workspace</SidebarGroupLabel>
             <SidebarMenu>
@@ -167,6 +193,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenu>
           </SidebarGroup>
         )}
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Others</SidebarGroupLabel>
+          <SidebarMenu>
+            {otherItems.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton asChild tooltip={item.title}>
+                  <Link href={item.getUrl(workspaceId)}>
+                    <item.icon />
+                    <span>{item.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
