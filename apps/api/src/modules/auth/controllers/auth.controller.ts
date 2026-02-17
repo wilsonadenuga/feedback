@@ -1,4 +1,13 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Get, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Get,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import {
@@ -78,16 +87,14 @@ export class AuthController {
   @Get('google/login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('google'))
-  async googleAuth() {
-    
-  };
+  async googleAuth() {}
   @Get('/google/callback')
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req: { user: LoginDto }) {
-    const user = req.user
+    const user = req.user;
     return {
       user,
       message: 'Google login successful',
-    }
+    };
   }
 }

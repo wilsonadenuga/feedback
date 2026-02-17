@@ -74,6 +74,6 @@ export default () => ({
   google: {
     id: env.GOOGLE_CLIENT_ID,
     secret: env.GOOGLE_CLIENT_SECRET,
-    url: env.GOOGLE_CALLBACK_URL
+    url: env.GOOGLE_CALLBACK_URL,
   },
 });
