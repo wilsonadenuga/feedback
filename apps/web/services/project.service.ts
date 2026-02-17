@@ -1,4 +1,4 @@
-import { Project, SuccessResponse } from "@feedback/schema";
+import { CreateProjectInput, Project, SuccessResponse } from "@feedback/schema";
 import { apiClient } from "@/lib/api-client";
 
 export const projectService = {
@@ -9,5 +9,11 @@ export const projectService = {
         authenticated: true,
       },
     );
+  },
+
+  createProject: (
+    data: CreateProjectInput,
+  ): Promise<SuccessResponse<Project>> => {
+    return apiClient.post("/v1/projects", data, { authenticated: true });
   },
 };

@@ -62,7 +62,7 @@ const projectItems = [
     title: "Feedbacks",
     icon: IconMessage,
     getUrl: (workspaceId: string, projectId: string) =>
-      `/dashboard/${workspaceId}/${projectId}/feedbacks`,
+      `/dashboard/${workspaceId}/projects/${projectId}/feedbacks`,
   },
   {
     title: "Labels",
