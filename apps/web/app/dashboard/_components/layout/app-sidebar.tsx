@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
   IconFolder,
+  IconHome,
   IconInnerShadowTop,
   IconMap2,
   IconMessage,
@@ -28,6 +29,14 @@ import {
 import { Skeleton } from "@feedback/ui/components/skeleton";
 
 const workspaceItems = [
+  {
+    title: "Home",
+    icon: IconHome,
+    getUrl: (workspaceId: string) => {
+      void workspaceId;
+      return "/dashboard";
+    },
+  },
   {
     title: "Projects",
     icon: IconFolder,
