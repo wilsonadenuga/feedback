@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     private readonly prisma: PrismaService,
-    private configService: ConfigService,
+    private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {
@@ -46,8 +46,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       }
       const payload = { sub: user.id, email: user.email };
 
-      const accessToken = await this.jwtService.signAsync(payload);
-      const refreshToken = uuidv4();
+      const jwtAccessToken = await this.jwtService.signAsync(payload);
+      const jwtRefreshToken = uuidv4();
 
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);
@@ -61,7 +61,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         },
       });
 
-      done(null, { user, accessToken, refreshToken });
+      done(null, { user, jwtAccessToken, jwtRefreshToken });
     } catch (error) {
       console.error('GoogleStrategy error:', error);
       done(error, false);

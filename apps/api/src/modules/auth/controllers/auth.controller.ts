@@ -88,13 +88,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('google'))
   async googleAuth() {}
-  @Get('/google/callback')
+
+  @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   googleAuthRedirect(@Req() req: { user: LoginDto }) {
     const user = req.user;
-    return {
+    return ResponseHelper.success(
       user,
-      message: 'Google login successful',
-    };
+      'Google login successful',
+  );
   }
 }
