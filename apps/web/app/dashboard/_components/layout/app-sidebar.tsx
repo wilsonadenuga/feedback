@@ -2,14 +2,13 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   IconBook,
   IconFolder,
   IconHome,
   IconHistory,
   IconInnerShadowTop,
-  IconMail,
   IconMap2,
   IconMessage,
   IconSettings,
@@ -97,12 +96,6 @@ const projectItems = [
 
 const otherItems = [
   {
-    title: "Invites",
-    icon: IconMail,
-    getUrl: (workspaceId?: string) =>
-      workspaceId ? `/dashboard/${workspaceId}/members` : "/dashboard",
-  },
-  {
     title: "Account Settings",
     icon: IconSettings,
     getUrl: (workspaceId?: string) => {
@@ -130,9 +123,35 @@ const otherItems = [
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const params = useParams();
+  const pathname = usePathname();
   const workspaceId = params?.workspaceId as string | undefined;
   const projectId = params?.projectId as string | undefined;
   const isWorkspaceSelectionScreen = !workspaceId;
+  
+  const isExactActive = React.useCallback(
+    (href: string) => pathname === href,
+    [pathname],
+  );
+  
+  const isNestedActive = React.useCallback(
+    (href: string) => pathname === href || pathname.startsWith(`${href}/`),
+    [pathname],
+  );
+
+  const getWorkspaceItemActive = React.useCallback(
+    (item: typeof workspaceItems[number], href: string) => {
+      if (item.title === "Home") {
+        return isExactActive(href);
+      }
+      
+      if (item.title === "Projects") {
+        return isExactActive(href);
+      }
+      
+      return isNestedActive(href);
+    },
+    [isExactActive, isNestedActive],
+  );
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -156,16 +175,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <SidebarGroupLabel>Workspace</SidebarGroupLabel>
             <SidebarMenu>
-              {workspaceItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.getUrl(workspaceId || "")}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {workspaceItems.map((item) => {
+                const href = item.getUrl(workspaceId || "");
+                const isActive = getWorkspaceItemActive(item, href);
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={isActive}
+                    >
+                      <Link href={href}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroup>
         )}
@@ -174,22 +202,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Project</SidebarGroupLabel>
             <SidebarMenu>
-              {projectItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link
-                      href={
-                        workspaceId && projectId
-                          ? item.getUrl(workspaceId, projectId)
-                          : "#"
-                      }
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {projectItems.map((item) => {
+                const href = item.getUrl(workspaceId, projectId);
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={isNestedActive(href)}>
+                      <Link href={href}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroup>
         )}
@@ -199,7 +225,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu>
             {otherItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild tooltip={item.title}>
+                <SidebarMenuButton
+                  asChild
+                  tooltip={item.title}
+                  isActive={isNestedActive(item.getUrl(workspaceId))}
+                >
                   <Link href={item.getUrl(workspaceId)}>
                     <item.icon />
                     <span>{item.title}</span>
