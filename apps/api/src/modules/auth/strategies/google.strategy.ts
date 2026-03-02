@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+  private readonly logger = new Logger(GoogleStrategy.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
@@ -30,19 +31,24 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ): Promise<any> {
     try {
       const { name, emails } = profile;
+      
+      if (!emails || !emails.length) {
+        throw new Error('Email not found in Google profile');
+      }
+
       const googleUser = {
-        email: emails?.[0]?.value,
+        email: emails[0].value,
         firstName: name?.givenName,
         lastName: name?.familyName,
       };
       let user = await this.userService.findUserByEmail(googleUser.email);
 
       if (!user) {
-        user = await this.userService.createUser(
+        user = await this.userService.createGoogleUser(
           `${googleUser.firstName} ${googleUser.lastName}`,
           googleUser.email,
+          'ACTIVE',
         );
-        await this.userService.updateUserStatus(user.id, 'ACTIVE');
       }
       const payload = { sub: user.id, email: user.email };
 
@@ -55,7 +61,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       await this.prisma.token.create({
         data: {
           type: 'refresh_token',
-          value: refreshToken,
+          value: jwtRefreshToken,
           expires_at: expiresAt,
           user_id: user.id,
         },
@@ -63,7 +69,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
       done(null, { user, jwtAccessToken, jwtRefreshToken });
     } catch (error) {
-      console.error('GoogleStrategy error:', error);
+      this.logger.error(`Google authentication failed: ${error.message}`, error.stack);
       done(error, false);
     }
   }

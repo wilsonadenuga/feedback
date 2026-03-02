@@ -4,6 +4,7 @@ import {
   RegisterResponseDto,
   ConfirmEmailResponseDto,
   ResendVerificationResponseDto,
+  GoogleAuthResponseDto,
 } from 'modules/auth/dto';
 
 export class AuthSwagger {
@@ -51,6 +52,34 @@ export class AuthSwagger {
       ApiResponse({
         status: HttpStatus.CONFLICT,
         description: 'Email already verified',
+      }),
+    );
+  }
+
+  static googleLogin() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Initiate Google OAuth login',
+      }),
+      ApiResponse({
+        status: HttpStatus.FOUND,
+        description: 'Redirect to Google OAuth',
+      }),
+    );
+  }
+
+  static googleAuthCallback() {
+    return applyDecorators(
+      ApiOperation({
+        summary: 'Google OAuth callback - completes authentication',
+      }),
+      ApiOkResponse({
+        description: 'User logged in successfully with Google',
+        type: GoogleAuthResponseDto,
+      }),
+      ApiResponse({
+        status: HttpStatus.UNAUTHORIZED,
+        description: 'Google authentication failed',
       }),
     );
   }

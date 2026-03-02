@@ -24,4 +24,12 @@ export class UserService {
   async updateUserStatus(userId: string, status: UserStatusType) {
     return this.userRepository.updateUser(userId, { status: status });
   }
-}
+
+  async createGoogleUser(name: string, email: string, status: UserStatusType) {
+    return this.userRepository.create({
+      name,
+      email,
+      status,
+    });
+  }
+  }

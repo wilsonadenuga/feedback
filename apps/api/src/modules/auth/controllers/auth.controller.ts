@@ -17,6 +17,7 @@ import {
   ResendLoginCodeDto,
   LoginDto,
   LoginVerifyDto,
+  GoogleAuthResponseDto,
 } from '../dto';
 import { AuthSwagger } from '../../../swagger/auth.swagger';
 import { ResponseHelper } from '../../../common';
@@ -86,12 +87,15 @@ export class AuthController {
 
   @Get('google/login')
   @HttpCode(HttpStatus.OK)
+  @AuthSwagger.googleLogin()
   @UseGuards(AuthGuard('google'))
   async googleAuth() {}
 
   @Get('google/callback')
+  @HttpCode(HttpStatus.OK)
+  @AuthSwagger.googleAuthCallback()
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req: { user: LoginDto }) {
+  googleAuthRedirect(@Req() req: { user: GoogleAuthResponseDto }) {
     const user = req.user;
     return ResponseHelper.success(
       user,
