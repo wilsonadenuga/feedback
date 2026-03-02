@@ -67,7 +67,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         },
       });
 
-      done(null, { user, jwtAccessToken, jwtRefreshToken });
+      done(null, {
+        user,
+        tokens: {
+          accessToken: jwtAccessToken,
+          refreshToken: jwtRefreshToken,
+          expiresIn: 15,
+        },
+        workspaces: [],
+      });
     } catch (error) {
       this.logger.error(`Google authentication failed: ${error.message}`, error.stack);
       done(error, false);
