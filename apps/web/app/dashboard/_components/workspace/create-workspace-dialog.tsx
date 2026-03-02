@@ -4,6 +4,7 @@ import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   type CreateWorkspaceInput,
+  type Workspace,
   createWorkspaceSchema,
 } from "@feedback/schema";
 import { useForm } from "react-hook-form";
@@ -25,9 +26,13 @@ import { Input } from "@feedback/ui/components/input";
 
 interface CreateWorkspaceDialogProps {
   trigger: React.ReactNode;
+  onCreated?: (workspace: Workspace) => void;
 }
 
-export function CreateWorkspaceDialog({ trigger }: CreateWorkspaceDialogProps) {
+export function CreateWorkspaceDialog({
+  trigger,
+  onCreated,
+}: CreateWorkspaceDialogProps) {
   const [open, setOpen] = React.useState(false);
   const createWorkspaceMutation = useCreateWorkspace();
 
@@ -53,6 +58,7 @@ export function CreateWorkspaceDialog({ trigger }: CreateWorkspaceDialogProps) {
     createWorkspaceMutation.mutate(data, {
       onSuccess: (response) => {
         toast.success(response.message || "Workspace created");
+        onCreated?.(response.data);
         handleOpenChange(false);
       },
       onError: (error) => {

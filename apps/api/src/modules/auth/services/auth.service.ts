@@ -44,6 +44,7 @@ export class AuthService {
     return crypto.randomInt(100000, 999999).toString();
   }
 
+  // TODO: move the otp generation flow to otp module
   private async sendVerificationCode(userId: string, email: string) {
     const code = this.generateCode();
     const ttlMs = this.CODE_EXPIRY_MINUTES * 60 * 1000;
@@ -72,7 +73,7 @@ export class AuthService {
 
     return this.sendVerificationCode(user.id, email);
   }
-
+  
   async verifyCode(dto: ConfirmEmailDto) {
     const { email, code } = dto;
     const user = await this.userService.findUserByEmail(email);
@@ -131,14 +132,12 @@ export class AuthService {
     return this.sendVerificationCode(user.id, email);
   }
 
+  // TODO: move to token service
   private async generateTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
 
     const accessTokenExpiresIn = this.configService.getOrThrow<number>(
       'jwt.accessToken.expiresIn',
-    );
-    const refreshTokenSecret = this.configService.getOrThrow<string>(
-      'jwt.refreshToken.secret',
     );
     const refreshTokenExpiresIn = this.configService.getOrThrow<number>(
       'jwt.refreshToken.expiresIn',
@@ -147,15 +146,12 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
     const refreshToken = uuidv4();
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
 
-    // TODO: use token service instead
     await this.prisma.token.create({
       data: {
         type: 'refresh_token',
         value: refreshToken,
-        expires_at: expiresAt,
+        expires_at: new Date(Date.now() + refreshTokenExpiresIn * 1000),
         user_id: userId,
       },
     });
@@ -225,6 +221,7 @@ export class AuthService {
     };
   }
 
+  // TODO: move the otp verification logic to otp module
   async loginVerify(dto: LoginVerifyDto) {
     const { email, code } = dto;
     const user = await this.userService.findUserByEmail(email);

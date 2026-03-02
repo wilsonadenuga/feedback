@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@feedback/ui/components/button";
-import { IconPlus, IconRefresh } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import { useWorkspaces } from "@/hooks/api/use-workspaces";
 import { EmptyState } from "@/components/empty-state";
 import { PageSpinner } from "@/components/page-spinner";
@@ -11,7 +11,7 @@ import { WorkspaceList } from "./_components/workspace/workspace-list";
 import { CreateWorkspaceDialog } from "./_components/workspace/create-workspace-dialog";
 
 export default function DashboardPage() {
-  const { data, isLoading, error, refetch } = useWorkspaces();
+  const { data, isLoading, error } = useWorkspaces();
 
   useEffect(() => {
     if (error) {
@@ -38,23 +38,13 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {error || workspaces.length === 0 ? (
+      {workspaces.length === 0 ? (
         <div className="flex items-center justify-center min-h-[40vh]">
           <EmptyState
-            title={error ? "Unable to load workspaces" : "No workspaces yet"}
-            description={
-              error
-                ? "There was a problem loading your workspaces. Please try again."
-                : "Get started by creating your first workspace to organize your projects and collaborate with your team."
-            }
+            title="No workspaces yet"
+            description="Get started by creating your first workspace to organize your projects and collaborate with your team."
             action={
               <div className="flex gap-2">
-                {error && (
-                  <Button variant="outline" onClick={() => refetch()}>
-                    <IconRefresh className="h-4 w-4 mr-2" />
-                    Retry
-                  </Button>
-                )}
                 <CreateWorkspaceDialog
                   trigger={
                     <Button>

@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { IconDotsVertical, IconSearch } from "@tabler/icons-react";
 import { type ColumnDef } from "@tanstack/react-table";
 import type { Project } from "@feedback/schema";
@@ -19,25 +18,16 @@ import {
 } from "@feedback/ui/components/dropdown-menu";
 import { Input } from "@feedback/ui/components/input";
 
-type ProjectsTableMeta = {
-  workspaceId?: string;
-};
-
 const columns: ColumnDef<Project>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row, table }) => {
+    cell: ({ row }) => {
       const shortId = row.original.id.substring(0, 8);
-      const workspaceId = (table.options.meta as ProjectsTableMeta | undefined)
-        ?.workspaceId;
+      const workspaceId = row.original.workspace_id;
       return (
         <Link
-          href={
-            workspaceId
-              ? `/dashboard/${workspaceId}/${row.original.id}/feedbacks`
-              : "#"
-          }
+          href={`/dashboard/${workspaceId}/projects/${row.original.id}/feedbacks`}
           className="flex flex-col gap-0.5 hover:underline"
         >
           <div className="font-medium">{row.getValue("name")}</div>
@@ -50,10 +40,9 @@ const columns: ColumnDef<Project>[] = [
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => {
-      const description = row.getValue("description") as string | null;
       return (
         <div className="text-muted-foreground max-w-md truncate">
-          {description || "No description"}
+          {row.original.description || "No description provided"}
         </div>
       );
     },
@@ -108,8 +97,6 @@ const columns: ColumnDef<Project>[] = [
 ];
 
 export function ProjectsTable({ data }: { data: Project[] }) {
-  const params = useParams();
-  const workspaceId = params?.workspaceId as string | undefined;
   const [searchQuery, setSearchQuery] = React.useState("");
 
   const filteredData = React.useMemo(() => {
@@ -121,32 +108,22 @@ export function ProjectsTable({ data }: { data: Project[] }) {
   }, [data, searchQuery]);
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <div className="flex flex-col gap-4 px-4 lg:px-6">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Projects</h1>
-          <p className="text-muted-foreground text-sm">
-            Manage and track all your projects
-          </p>
-        </div>
-        <div className="relative max-w-sm">
-          <IconSearch className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
-          <Input
-            placeholder="Search projects..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
+    <>
+      <div className="relative max-w-sm">
+        <IconSearch className="text-muted-foreground absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+        <Input
+          placeholder="Search projects..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
       </div>
       <DataTable
         columns={columns}
         data={filteredData}
-        getRowId={(row) => row.id}
-        meta={{ workspaceId }}
         enableRowSelection={false}
         enablePagination={false}
       />
-    </div>
+    </>
   );
 }
