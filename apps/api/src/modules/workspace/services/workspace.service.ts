@@ -48,7 +48,14 @@ export class WorkspaceService {
   }
 
   async findAll(userId: string) {
-    return this.workspaceRepository.findByUserId(userId);
+    const workspaces = await this.workspaceRepository.findByUserId(userId);
+    return workspaces.map((ws) => {
+      const { _count, ...rest } = ws;
+      return {
+        ...rest,
+        project_count: _count.projects ?? 0,
+      };
+    });
   }
 
   async findOne(workspaceId: string) {
@@ -56,6 +63,14 @@ export class WorkspaceService {
 
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
+    }
+
+    if (workspace._count) {
+      const { _count, ...rest } = workspace;
+      return {
+        ...rest,
+        project_count: _count.projects ?? 0,
+      };
     }
 
     return workspace;

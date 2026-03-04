@@ -32,6 +32,9 @@ export class WorkspaceRepository {
             },
           },
         },
+        _count: {
+          select: { projects: true },
+        },
       },
     });
   }
@@ -42,6 +45,11 @@ export class WorkspaceRepository {
         members: { some: { user_id: userId } },
       },
       orderBy: { created_at: 'desc' },
+      include: {
+        _count: {
+          select: { projects: true },
+        },
+      },
     });
   }
 
