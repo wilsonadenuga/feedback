@@ -17,11 +17,7 @@ export class UserLoginCodeEventListener {
     this.logger.log(`Handling user.login.code event for ${event.email}`);
 
     try {
-      const html = await render(
-        LoginCode({
-          code: event.code,
-        }),
-      );
+      const html = await render(LoginCode({ code: event.code }));
 
       await this.emailQueue.add(
         'send-email',

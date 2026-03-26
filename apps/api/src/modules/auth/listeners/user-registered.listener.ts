@@ -17,11 +17,7 @@ export class UserRegisteredEventListener {
     this.logger.log(`Handling user.registered event for ${event.email}`);
 
     try {
-      const html = await render(
-        ConfirmEmail({
-          validationCode: event.validationCode,
-        }),
-      );
+      const html = await render(ConfirmEmail({ validationCode: event.validationCode }));
 
       await this.emailQueue.add(
         'send-email',
