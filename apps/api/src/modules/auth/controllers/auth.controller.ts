@@ -1,4 +1,13 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Get,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../services/auth.service';
 import {
@@ -8,9 +17,11 @@ import {
   ResendLoginCodeDto,
   LoginDto,
   LoginVerifyDto,
+  GoogleAuthResponseDto,
 } from '../dto';
 import { AuthSwagger } from '../../../swagger/auth.swagger';
 import { ResponseHelper } from '../../../common';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -72,5 +83,23 @@ export class AuthController {
   async loginVerify(@Body() dto: LoginVerifyDto) {
     const result = await this.authService.loginVerify(dto);
     return ResponseHelper.success(result, 'Login successful');
+  }
+
+  @Get('google/login')
+  @HttpCode(HttpStatus.OK)
+  @AuthSwagger.googleLogin()
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {}
+
+  @Get('google/callback')
+  @HttpCode(HttpStatus.OK)
+  @AuthSwagger.googleAuthCallback()
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req: { user: GoogleAuthResponseDto }) {
+    const user = req.user;
+    return ResponseHelper.success(
+      user,
+      'Google login successful',
+  );
   }
 }

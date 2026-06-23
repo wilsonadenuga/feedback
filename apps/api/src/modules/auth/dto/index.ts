@@ -4,3 +4,4 @@ export * from './resend-verification.dto';
 export * from './resend-login-code.dto';
 export * from './login.dto';
 export * from './login-verify.dto';
+export * from './google.dto';

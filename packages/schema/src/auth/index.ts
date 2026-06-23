@@ -5,3 +5,4 @@ export * from './resend-verification.schema';
 export * from './resend-login-code.schema';
 export * from './login.schema';
 export * from './login-verify.schema';
+export * from './google.schema';

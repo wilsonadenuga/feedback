@@ -10,6 +10,7 @@ import { UserModule } from '../user/user.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
 import { UserRegisteredEventListener } from './listeners/user-registered.listener';
 import { UserLoginCodeEventListener } from './listeners/user-login-code.listener';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UserLoginCodeEventListener } from './listeners/user-login-code.listener
   ],
   controllers: [AuthController],
   providers: [
+    GoogleStrategy,
     AuthService,
     JwtStrategy,
     UserRegisteredEventListener,
