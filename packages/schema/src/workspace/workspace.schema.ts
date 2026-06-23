@@ -9,6 +9,7 @@ export const workspaceSchema = z.object({
   member_count: z.number().int().nonnegative(),
   created_at: z.string(),
   updated_at: z.string(),
+  project_count: z.number().optional(),
 });
 
 export type Workspace = z.infer<typeof workspaceSchema>;

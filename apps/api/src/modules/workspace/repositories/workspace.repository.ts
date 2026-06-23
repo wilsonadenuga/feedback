@@ -38,7 +38,7 @@ export class WorkspaceRepository {
           },
         },
         _count: {
-          select: { members: true },
+          select: { projects: true,  members: true },
         },
       },
     });
@@ -52,7 +52,7 @@ export class WorkspaceRepository {
       orderBy: { created_at: 'desc' },
       include: {
         _count: {
-          select: { members: true },
+          select: { projects: true, members: true }
         },
       },
     });

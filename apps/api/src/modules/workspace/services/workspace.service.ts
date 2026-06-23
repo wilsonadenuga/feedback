@@ -58,6 +58,7 @@ export class WorkspaceService {
       const { _count, ...rest } = ws;
       return {
         ...rest,
+        project_count: _count.projects ?? 0,
         member_count: _count?.members ?? 0,
       };
     });
@@ -69,9 +70,13 @@ export class WorkspaceService {
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-
-    const { _count, ...rest } = workspace;
-    return { ...rest, member_count: _count?.members ?? 0 };
+    
+     const { _count, ...rest } = workspace;
+      return {
+        ...rest,
+        project_count: _count.projects ?? 0,
+        member_count: _count?.members ?? 0 
+      };
   }
 
   async update(workspaceId: string, data: UpdateWorkspaceDto) {
