@@ -44,11 +44,23 @@ export class WorkspaceService {
       },
     };
 
-    return this.workspaceRepository.create(createData);
+    const workspace = await this.workspaceRepository.create(createData);
+    if (workspace) {
+      const { _count, ...rest } = workspace;
+      return { ...rest, member_count: _count?.members ?? 0 };
+    }
+    return workspace;
   }
 
   async findAll(userId: string) {
-    return this.workspaceRepository.findByUserId(userId);
+    const workspaces = await this.workspaceRepository.findByUserId(userId);
+    return workspaces.map((ws) => {
+      const { _count, ...rest } = ws;
+      return {
+        ...rest,
+        member_count: _count?.members ?? 0,
+      };
+    });
   }
 
   async findOne(workspaceId: string) {
@@ -58,7 +70,8 @@ export class WorkspaceService {
       throw new NotFoundException('Workspace not found');
     }
 
-    return workspace;
+    const { _count, ...rest } = workspace;
+    return { ...rest, member_count: _count?.members ?? 0 };
   }
 
   async update(workspaceId: string, data: UpdateWorkspaceDto) {
@@ -68,10 +81,12 @@ export class WorkspaceService {
       throw new NotFoundException('Workspace not found');
     }
 
-    return this.workspaceRepository.update(workspaceId, {
+    const updated = await this.workspaceRepository.update(workspaceId, {
       name: data.name,
       logo_url: data.logo_url,
     });
+    const { _count, ...rest } = updated;
+    return { ...rest, member_count: _count?.members ?? 0 };
   }
 
   async delete(workspaceId: string): Promise<void> {

@@ -6,6 +6,7 @@ export const workspaceSchema = z.object({
   name: z.string(),
   owner_user_id: uuidSchema,
   logo_url: z.string().nullable(),
+  member_count: z.number().int().nonnegative(),
   created_at: z.string(),
   updated_at: z.string(),
 });
