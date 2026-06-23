@@ -9,6 +9,11 @@ export class WorkspaceRepository {
   async create(data: Prisma.WorkspaceCreateInput) {
     return this.prisma.workspace.create({
       data,
+      include: {
+        _count: {
+          select: { members: true},
+        },
+      },
     });
   }
 
@@ -33,7 +38,7 @@ export class WorkspaceRepository {
           },
         },
         _count: {
-          select: { projects: true },
+          select: { projects: true,  members: true },
         },
       },
     });
@@ -47,7 +52,7 @@ export class WorkspaceRepository {
       orderBy: { created_at: 'desc' },
       include: {
         _count: {
-          select: { projects: true },
+          select: { projects: true, members: true }
         },
       },
     });
@@ -57,6 +62,11 @@ export class WorkspaceRepository {
     return this.prisma.workspace.update({
       where: { id },
       data,
+      include: {
+        _count: {
+          select: { members: true },
+        },
+      },
     });
   }
 
