@@ -59,7 +59,7 @@ make prisma-migrate
 
 ### Sprints, Linear Issues & Branching
 - Work runs in short **sprints (Linear Cycles)**. Scope each feature to fit roughly **three days**; if it won't fit, split it into multiple features.
-- **Plan each feature together first**, then document it: agree on scope and approach, write the plan to `docs/features/<slug>.md` (versioned with the code and reviewed in the PR), and only then break it into **Linear issues/tasks** that reference that spec.
+- **Plan each feature together first**, then document it: agree on scope and approach, write the plan to `docs/sprints/<slug>.md` (versioned with the code and reviewed in the PR), and only then break it into **Linear issues/tasks** that reference that spec.
 - Every branch must map to a **Linear issue** before implementation begins. If no issue exists, ask the user to create one or confirm that Claude should create one.
 - Start every new branch off `develop`, not off `main` or another feature branch.
 - Name branches with the **Linear issue ID** and a short slug, keeping a Conventional-Commit type prefix, for example `feat/fee-12-feedback-filters`, `fix/fee-13-auth-redirect`, or `chore/fee-14-prisma-cleanup`. The issue ID must appear in the branch name so Linear auto-links the PR and advances the issue's status. (Replace `fee` with the actual Linear team key.)
