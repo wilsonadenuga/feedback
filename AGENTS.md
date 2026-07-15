@@ -58,7 +58,7 @@ make prisma-migrate
 ## Task Workflow
 
 ### Branching and GitHub Issues
-- Start every new task from a new Git branch.
+- Start every new task from a new Git branch created off `develop`, not off `main` or another feature branch.
 - Every branch must map to a GitHub issue before implementation begins. If no issue exists, ask the user to create one or confirm that Claude should create one.
 - Name branches with the issue number and short task slug, for example `feat/123-feedback-filters`, `fix/124-auth-redirect`, or `chore/125-prisma-cleanup`.
 - Keep the branch focused on the linked issue. If the work expands into a separate concern, create or request a separate issue and branch.
@@ -102,6 +102,7 @@ make prisma-migrate
 - Add or update tests for changed business logic, validation, permissions, and API behavior.
 - For UI changes, verify affected flows manually or with existing test patterns.
 - Run the narrowest relevant checks first, then broader checks when the change touches shared packages or contracts.
+- Run tests only against a local database. Never run tests against a production database.
 
 ## Architecture
 
