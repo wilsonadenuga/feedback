@@ -90,6 +90,9 @@ make prisma-migrate
 - Avoid ambiguous names like `data`, `item`, `temp`, `handleChange`, or `process` unless the scope makes the meaning obvious.
 - Prefer domain-specific names, for example `workspaceMember`, `feedbackStatus`, `createProjectInput`, or `sendVerificationEmail`.
 - Function names should describe the action and outcome.
+- Name things the way a normal developer would — plain, familiar words that are instantly clear. Don't reach for a fancy synonym when a common word works (`use`, not `utilize` or `leverage`).
+- Avoid "AI-tell" vocabulary that reads as machine-generated, in identifiers and comments alike: `enhanced`, `advanced`, `robust`, `comprehensive`, `seamless`, `smart`, `intelligent`, `powerful`, `optimized`, `sophisticated`, `streamlined`. Prefer the plain equivalent or just drop the adjective.
+- Don't decorate names with generic suffixes (`Manager`, `Handler`, `Helper`, `Wrapper`, `Processor`, `Util`) unless that is genuinely what the thing is — name it by what it does.
 
 ### API and Schema Changes
 - Shared request/response validation belongs in `packages/schema` when used by both API and web.
