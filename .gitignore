@@ -38,3 +38,6 @@ coverage
 
 # Test
 *.tsbuildinfo
+
+# Internal planning/design docs — kept local
+docs/

@@ -160,8 +160,8 @@ Core entities:
 
 | Phase | Theme | Product features | AI capabilities |
 |---|---|---|---|
-| **MVP** | The core loop | Auth, workspace & roles, feedback board, votes & comments, guest submissions, self-updating public roadmap, loop emails | **AI Foundation** + **Semantic duplicate detection** |
-| **Phase 2** | Reach & organization | Embeddable widget, branded portal, changelog, weekly digest, API intake | **Auto-tagging & classification** |
+| **MVP** | The core loop | Auth, workspace & roles, feedback board, votes & comments, guest submissions, self-updating public roadmap, loop emails, **manual duplicate merge** | — *(no AI; moved to Phase 2)* |
+| **Phase 2** | Reach & organization | Embeddable widget, branded portal, changelog, weekly digest, API intake | **AI Foundation** + **Semantic duplicate detection** + **Auto-tagging & classification** |
 | **Phase 3** | Findability | Semantic search UI, scheduled/smart changelog publishing | **Semantic search** (hybrid BM25 + vector) |
 | **Phase 3.5** | Self-serve answers | Doc import (URL crawl + file upload), "Ask" tab in the widget | **AI Answers** — RAG over customer docs + app content, cited; misses → feedback |
 | **Phase 4** | Insight | In-app **Insights** page, weekly & monthly schedule, Slack / Teams delivery | **Voice-of-customer digests** — AI summary of what people asked for |
@@ -229,20 +229,13 @@ the loop — end to end — with AI catching duplicates on the way in.*
   progress update, launch** — plus **vote/comment alerts**. Email delivery must
   support both a hosted provider and SMTP (SMTP required for self-hosters).
 
-**AI — Foundation (Phase 0 prerequisite)**
+**AI — moved to Phase 2** *(2026-07-18)*
 
-- **[must]** pgvector on Postgres; async embedding pipeline (off the request path).
-- **[must]** LLM **provider abstraction** — OpenAI / Anthropic / Bedrock / Ollama
-  behind one interface, with **per-workspace bring-your-own-key (BYOK)**.
-- **[must]** **AI budget caps** (soft + hard) per workspace; telemetry on every
-  call (tokens, cost, latency, model); **feature flags per workspace**.
-
-**AI — Semantic duplicate detection**
-
-- **[must]** On submission, suggest similar existing feedback; on the admin side,
-  surface merge candidates in the triage queue.
-- **[must]** Embed the draft, cosine-similarity top-k, **tunable threshold per
-  workspace**, **human-in-the-loop only — never auto-merge**.
+- The **AI Foundation** and **Semantic duplicate detection** were deprioritised out
+  of the MVP so the core loop can ship without standing up pgvector, the embedding
+  pipeline, and provider BYOK. Full scope now lives in §6.2.
+- The MVP keeps only **manual duplicate merge** — an admin merges duplicates by hand
+  (consolidating votes/comments), no AI, no auto-merge.
 
 ### 6.2 Phase 2 — reach & organization
 
@@ -279,6 +272,23 @@ manual effort.*
   richer AI thematic summary is Phase 4, §6.5).
 - **[should]** **Programmatic intake via API keys** — per-workspace keys with
   generation/rotation and an authenticated submission endpoint.
+
+**AI — Foundation** *(moved from MVP)*
+
+- **[must]** pgvector on Postgres; async embedding pipeline (off the request path).
+  The embedding model is **pinned at the instance level** (uniform dimension for
+  pgvector); only the **generative** provider is per-workspace BYOK.
+- **[must]** LLM **provider abstraction** — direct **OpenAI / Anthropic / Google** +
+  **OpenRouter** behind one interface (Bedrock / Ollama later), with **per-workspace BYOK**.
+- **[must]** **AI budget caps** (soft + hard) per workspace; telemetry on every call
+  (tokens, cost, latency, model); **feature flags per workspace**.
+
+**AI — Semantic duplicate detection** *(moved from MVP)*
+
+- **[must]** On submission, suggest similar existing feedback; surface merge
+  candidates in the admin triage queue.
+- **[must]** Embed the draft, cosine top-k, **tunable threshold per workspace**,
+  **human-in-the-loop only — never auto-merge**.
 
 **AI — Auto-tagging & classification**
 
