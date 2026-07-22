@@ -1,0 +1,16 @@
+model Attachment {
+  id                  String   @id @default(uuid())
+  feedback_id         String
+  storage_key         String
+  url                 String
+  mime_type           String
+  size_bytes          Int
+  uploaded_by_user_id String
+  created_at          DateTime @default(now())
+
+  feedback    Feedback @relation(fields: [feedback_id], references: [id], onDelete: Cascade)
+  uploaded_by User     @relation(fields: [uploaded_by_user_id], references: [id])
+
+  @@index([feedback_id])
+  @@map("attachments")
+}

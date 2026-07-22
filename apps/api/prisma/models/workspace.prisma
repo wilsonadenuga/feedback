@@ -1,15 +1,19 @@
 model Workspace {
   id            String   @id @default(uuid())
+  slug          String   @unique
   name          String
   owner_user_id String
+  logo_url      String?
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
-  logo_url      String?
 
-  owner    User              @relation(fields: [owner_user_id], references: [id])
-  projects Project[]
-  members  WorkspaceMember[]
-  invites  WorkspaceInvite[]
+  owner     User                @relation(fields: [owner_user_id], references: [id])
+  settings  WorkspaceSettings?
+  members   WorkspaceMember[]
+  customers WorkspaceCustomer[]
+  invites   WorkspaceInvite[]
+  feedbacks Feedback[]
+  labels    Label[]
 
   @@map("workspaces")
 }

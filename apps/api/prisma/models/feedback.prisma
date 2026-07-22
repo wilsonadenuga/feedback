@@ -1,20 +1,28 @@
 model Feedback {
-  id             String   @id @default(uuid())
-  project_id     String
-  title          String
-  description    String?
-  status         String   @default("OPEN")
-  customer_id    String?
-  customer_email String?
-  customer_name  String?
-  customer_meta  Json?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  id                String    @id @default(uuid())
+  workspace_id      String
+  author_id         String
+  title             String
+  description       String?
+  status            String    @default("PENDING")
+  status_changed_at DateTime?
+  vote_count        Int       @default(0)
+  merged_into_id    String?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
 
-  project Project         @relation(fields: [project_id], references: [id])
-  labels  FeedbackLabel[]
+  workspace   Workspace       @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+  author      User            @relation(fields: [author_id], references: [id])
+  labels      FeedbackLabel[]
+  votes       Vote[]
+  comments    Comment[]
+  attachments Attachment[]
+  merged_into Feedback?       @relation("FeedbackMerge", fields: [merged_into_id], references: [id])
+  merges      Feedback[]      @relation("FeedbackMerge")
 
-  @@index([project_id])
-  @@index([status])
+  @@index([workspace_id])
+  @@index([workspace_id, status])
+  @@index([status_changed_at])
+  @@index([merged_into_id])
   @@map("feedbacks")
 }

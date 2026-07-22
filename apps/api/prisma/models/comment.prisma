@@ -1,0 +1,18 @@
+model Comment {
+  id          String   @id @default(uuid())
+  feedback_id String
+  author_id   String
+  body        String
+  parent_id   String?
+  is_internal Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  feedback Feedback  @relation(fields: [feedback_id], references: [id], onDelete: Cascade)
+  author   User      @relation(fields: [author_id], references: [id])
+  parent   Comment?  @relation("CommentThread", fields: [parent_id], references: [id])
+  replies  Comment[] @relation("CommentThread")
+
+  @@index([feedback_id])
+  @@map("comments")
+}

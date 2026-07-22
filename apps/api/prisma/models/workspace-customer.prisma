@@ -1,0 +1,13 @@
+model WorkspaceCustomer {
+  id           String   @id @default(uuid())
+  workspace_id String
+  user_id      String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([workspace_id, user_id])
+  @@map("workspace_customers")
+}

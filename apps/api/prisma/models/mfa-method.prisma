@@ -1,0 +1,15 @@
+model MfaMethod {
+  id               String    @id @default(uuid())
+  user_id          String
+  type             String    @default("TOTP")
+  secret_encrypted String?
+  confirmed_at     DateTime?
+  last_used_at     DateTime?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("mfa_methods")
+}
