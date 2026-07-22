@@ -160,7 +160,7 @@ Core entities:
 
 | Phase | Theme | Product features | AI capabilities |
 |---|---|---|---|
-| **MVP** | The core loop | Auth, workspace & roles, feedback board, votes & comments, guest submissions, self-updating public roadmap, loop emails, **manual duplicate merge** | — *(no AI; moved to Phase 2)* |
+| **MVP** | The core loop | Auth, workspace & roles, feedback board, votes & comments, self-updating public roadmap, loop emails, **manual duplicate merge** | — *(no AI; moved to Phase 2)* |
 | **Phase 2** | Reach & organization | Embeddable widget, branded portal, changelog, weekly digest, API intake | **AI Foundation** + **Semantic duplicate detection** + **Auto-tagging & classification** |
 | **Phase 3** | Findability | Semantic search UI, scheduled/smart changelog publishing | **Semantic search** (hybrid BM25 + vector) |
 | **Phase 3.5** | Self-serve answers | Doc import (URL crawl + file upload), "Ask" tab in the widget | **AI Answers** — RAG over customer docs + app content, cited; misses → feedback |
@@ -207,8 +207,9 @@ the loop — end to end — with AI catching duplicates on the way in.*
   visible to everyone, or kept private between author and team.
 - **[must]** **Upvotes and comments** on feedback; vote counts visible on board
   and roadmap.
-- **[must]** **Guest submissions** — submit without an account, with team
-  moderation controls.
+- **[must]** **Accounts to participate** — posting, voting, and commenting all
+  require a signed-in user (passwordless email — minimal friction). No anonymous/guest
+  participation, so every action is attributable and dedup-able.
 - **[should]** **Image attachments** on feedback — upload, drag-and-drop, or paste
   from clipboard (screenshots matter for bug reports); type/size validation and
   abuse controls on guest uploads.
