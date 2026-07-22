@@ -1,18 +1,18 @@
 model Label {
-  id          String   @id @default(uuid())
-  project_id  String
-  name        String
-  slug        String
-  description String?
-  color       String?
-  is_default  Boolean  @default(false)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id           String   @id @default(uuid())
+  workspace_id String
+  name         String
+  slug         String
+  description  String?
+  color        String?
+  is_default   Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
-  project   Project         @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  workspace Workspace       @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
   feedbacks FeedbackLabel[]
 
-  @@unique([project_id, slug])
-  @@index([project_id])
+  @@unique([workspace_id, slug])
+  @@index([workspace_id])
   @@map("labels")
 }

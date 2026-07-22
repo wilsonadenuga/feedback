@@ -1,0 +1,13 @@
+model WorkspaceSettings {
+  id               String   @id @default(uuid())
+  workspace_id     String   @unique
+  board_visibility String   @default("PUBLIC")
+  roadmap_public   Boolean  @default(true)
+  roadmap_statuses String[] @default(["PLANNED", "IN_PROGRESS", "COMPLETED"])
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspace_id], references: [id], onDelete: Cascade)
+
+  @@map("workspace_settings")
+}

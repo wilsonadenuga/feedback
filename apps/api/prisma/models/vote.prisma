@@ -1,0 +1,13 @@
+model Vote {
+  id          String   @id @default(uuid())
+  feedback_id String
+  user_id     String
+  created_at  DateTime @default(now())
+
+  feedback Feedback @relation(fields: [feedback_id], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [user_id], references: [id])
+
+  @@unique([feedback_id, user_id])
+  @@index([feedback_id])
+  @@map("votes")
+}

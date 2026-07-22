@@ -12,7 +12,3 @@ model Token {
 
   @@map("tokens")
 }
-
-// workspace_invite - used for inviting users to workspaces
-// refresh_token - used for keeping users logged in to dashboard
-// password_reset - used for password recovery

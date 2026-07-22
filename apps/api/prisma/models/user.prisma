@@ -1,15 +1,23 @@
 model User {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  name       String
-  status     String   @default("UNVERIFIED")
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id          String   @id @default(uuid())
+  email       String   @unique
+  name        String
+  status      String   @default("UNVERIFIED")
+  mfa_enabled Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
-  workspaces        Workspace[]
-  workspace_members WorkspaceMember[]
-  workspace_invites WorkspaceInvite[]
-  tokens            Token[]
+  workspaces          Workspace[]
+  workspace_members   WorkspaceMember[]
+  workspace_customers WorkspaceCustomer[]
+  workspace_invites   WorkspaceInvite[]
+  tokens              Token[]
+  mfa_methods         MfaMethod[]
+  mfa_recovery_codes  MfaRecoveryCode[]
+  feedbacks           Feedback[]
+  votes               Vote[]
+  comments            Comment[]
+  attachments         Attachment[]
 
   @@map("users")
 }
