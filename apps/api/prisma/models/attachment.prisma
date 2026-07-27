@@ -1,6 +1,7 @@
 model Attachment {
   id                  String   @id @default(uuid())
   feedback_id         String
+  provider            String
   storage_key         String
   url                 String
   mime_type           String

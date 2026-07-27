@@ -6,4 +6,5 @@ export * from './workspace-member';
 export * from './workspace-invite';
 export * from './labels';
 export * from './feedbacks';
+export * from './attachments';
 export * from './token';
