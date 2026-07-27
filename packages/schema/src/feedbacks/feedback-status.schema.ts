@@ -10,15 +10,6 @@ export const FEEDBACK_STATUSES = {
   DUPLICATE: 'DUPLICATE',
 } as const;
 
-export type FeedbackStatus =
-  (typeof FEEDBACK_STATUSES)[keyof typeof FEEDBACK_STATUSES];
+export const feedbackStatusSchema = z.enum(FEEDBACK_STATUSES);
 
-export const feedbackStatusSchema = z.enum([
-  'PENDING',
-  'REVIEW',
-  'PLANNED',
-  'IN_PROGRESS',
-  'COMPLETED',
-  'DECLINED',
-  'DUPLICATE',
-]);
+export type FeedbackStatus = z.infer<typeof feedbackStatusSchema>;

@@ -5,7 +5,6 @@ export const BOARD_VISIBILITY = {
   PRIVATE: 'PRIVATE',
 } as const;
 
-export type BoardVisibility =
-  (typeof BOARD_VISIBILITY)[keyof typeof BOARD_VISIBILITY];
+export const boardVisibilitySchema = z.enum(BOARD_VISIBILITY);
 
-export const boardVisibilitySchema = z.enum(['PUBLIC', 'PRIVATE']);
+export type BoardVisibility = z.infer<typeof boardVisibilitySchema>;

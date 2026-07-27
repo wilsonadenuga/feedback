@@ -4,6 +4,6 @@ export const MFA_TYPES = {
   TOTP: 'TOTP',
 } as const;
 
-export type MfaType = (typeof MFA_TYPES)[keyof typeof MFA_TYPES];
+export const mfaTypeSchema = z.enum(MFA_TYPES);
 
-export const mfaTypeSchema = z.enum(['TOTP']);
+export type MfaType = z.infer<typeof mfaTypeSchema>;

@@ -16,15 +16,9 @@ export const INVITE_STATUSES = {
   EXPIRED: 'EXPIRED',
 } as const;
 
-export type InviteStatus =
-  (typeof INVITE_STATUSES)[keyof typeof INVITE_STATUSES];
+export const inviteStatusSchema = z.enum(INVITE_STATUSES);
 
-export const inviteStatusSchema = z.enum([
-  'PENDING',
-  'ACCEPTED',
-  'REVOKED',
-  'EXPIRED',
-]);
+export type InviteStatus = z.infer<typeof inviteStatusSchema>;
 
 export const workspaceInviteSchema = z.object({
   id: uuidSchema,

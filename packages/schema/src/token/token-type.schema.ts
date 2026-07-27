@@ -7,11 +7,6 @@ export const TOKEN_TYPES = {
   WORKSPACE_INVITE: 'WORKSPACE_INVITE',
 } as const;
 
-export type TokenType = (typeof TOKEN_TYPES)[keyof typeof TOKEN_TYPES];
+export const tokenTypeSchema = z.enum(TOKEN_TYPES);
 
-export const tokenTypeSchema = z.enum([
-  'EMAIL_VERIFICATION',
-  'LOGIN_CODE',
-  'REFRESH',
-  'WORKSPACE_INVITE',
-]);
+export type TokenType = z.infer<typeof tokenTypeSchema>;
