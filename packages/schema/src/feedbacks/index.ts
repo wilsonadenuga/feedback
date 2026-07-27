@@ -1,3 +1,4 @@
+export * from './feedback-status.schema';
 export * from './feedback.schema';
 export * from './create-feedback.schema';
 export * from './get-feedback.schema';

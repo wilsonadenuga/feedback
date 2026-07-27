@@ -4,7 +4,7 @@ import { successResponseSchema } from '../common/success-response.schema';
 import { labelSchema } from './label.schema';
 
 export const createLabelSchema = z.object({
-  project_id: uuidSchema,
+  workspace_id: uuidSchema,
   name: z
     .string()
     .min(1, 'Label name is required')

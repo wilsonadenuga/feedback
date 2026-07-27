@@ -3,7 +3,7 @@ import { uuidSchema } from '../common/uuid.schema';
 
 export const labelSchema = z.object({
   id: uuidSchema,
-  project_id: uuidSchema,
+  workspace_id: uuidSchema,
   name: z.string(),
   slug: z.string(),
   description: z.string().nullable(),

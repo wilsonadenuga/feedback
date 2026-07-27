@@ -4,7 +4,7 @@ import { labelSchema } from './label.schema';
 import { uuidSchema } from '../common/uuid.schema';
 
 export const getLabelsQuerySchema = z.object({
-  project_id: uuidSchema,
+  workspace_id: uuidSchema,
 });
 
 export const getLabelsResponseSchema = successResponseSchema(

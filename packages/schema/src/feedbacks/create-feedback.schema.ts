@@ -4,8 +4,8 @@ import { successResponseSchema } from '../common/success-response.schema';
 import { feedbackSchema } from './feedback.schema';
 
 export const createFeedbackSchema = z.object({
-  project_id: uuidSchema,
-  category_ids: z.array(uuidSchema).optional(),
+  workspace_id: uuidSchema,
+  label_ids: z.array(uuidSchema).optional(),
   title: z
     .string()
     .min(1, 'Title is required')
@@ -15,13 +15,6 @@ export const createFeedbackSchema = z.object({
     .string()
     .max(2000, 'Description must not exceed 2000 characters')
     .optional(),
-  customer_id: z.string().optional(),
-  customer_email: z.email('Invalid email address').optional(),
-  customer_name: z
-    .string()
-    .max(100, 'Name must not exceed 100 characters')
-    .optional(),
-  customer_meta: z.any().optional(),
 });
 
 export const createFeedbackResponseSchema =

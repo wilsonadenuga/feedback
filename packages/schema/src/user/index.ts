@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import { emailSchema, uuidSchema } from '../common';
 
-export const UserStatus = {
+export const USER_STATUSES = {
   UNVERIFIED: 'UNVERIFIED',
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',
   BANNED: 'BANNED',
 } as const;
+
+export type UserStatus = (typeof USER_STATUSES)[keyof typeof USER_STATUSES];
 
 export const userStatusSchema = z.enum([
   'UNVERIFIED',
@@ -14,7 +16,6 @@ export const userStatusSchema = z.enum([
   'SUSPENDED',
   'BANNED',
 ]);
-export type UserStatusType = z.infer<typeof userStatusSchema>;
 
 export const userSchema = z.object({
   id: uuidSchema,

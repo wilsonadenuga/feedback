@@ -21,7 +21,7 @@ import {
   LoginDto,
   LoginVerifyDto,
 } from '../dto';
-import { UserStatus } from '@feedback/schema';
+import { USER_STATUSES } from '@feedback/schema';
 import * as crypto from 'crypto';
 import { UserRegisteredEvent } from '../events/user-registered.event';
 import { UserLoginCodeEvent } from '../events/user-login-code.event';
@@ -82,7 +82,7 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    if (user.status !== UserStatus.UNVERIFIED) {
+    if (user.status !== USER_STATUSES.UNVERIFIED) {
       throw new ConflictException('Email already verified');
     }
 
@@ -99,7 +99,7 @@ export class AuthService {
     }
 
     await this.cache.del(`otp:email_verification:${user.id}`);
-    await this.userService.updateUserStatus(user.id, UserStatus.ACTIVE);
+    await this.userService.updateUserStatus(user.id, USER_STATUSES.ACTIVE);
     const tokens = await this.generateTokens(user.id, user.email);
 
     return {
@@ -107,7 +107,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        status: UserStatus.ACTIVE,
+        status: USER_STATUSES.ACTIVE,
         created_at: user.created_at.toISOString(),
         updated_at: user.updated_at.toISOString(),
       },
@@ -125,7 +125,7 @@ export class AuthService {
       };
     }
 
-    if (user.status === UserStatus.ACTIVE) {
+    if (user.status === USER_STATUSES.ACTIVE) {
       throw new ConflictException('Email already verified');
     }
 
@@ -173,7 +173,7 @@ export class AuthService {
       };
     }
 
-    if (user.status !== UserStatus.ACTIVE) {
+    if (user.status !== USER_STATUSES.ACTIVE) {
       throw new UnauthorizedException('Please verify your email first');
     }
 
@@ -202,7 +202,7 @@ export class AuthService {
       };
     }
 
-    if (user.status !== UserStatus.ACTIVE) {
+    if (user.status !== USER_STATUSES.ACTIVE) {
       throw new UnauthorizedException('Please verify your email first');
     }
 
@@ -230,7 +230,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or code');
     }
 
-    if (user.status !== UserStatus.ACTIVE) {
+    if (user.status !== USER_STATUSES.ACTIVE) {
       throw new UnauthorizedException('Please verify your email first');
     }
 
