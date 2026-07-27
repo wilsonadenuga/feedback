@@ -18,7 +18,7 @@ export class FeedbackSwagger {
       ApiOperation({
         summary: 'Create a new feedback',
         description:
-          'Creates a new feedback for a project. Optionally assign categories.',
+          'Creates a new feedback in a workspace. Optionally assign labels.',
       }),
       ApiOkResponse({
         description: 'Feedback created successfully',
@@ -40,7 +40,7 @@ export class FeedbackSwagger {
       ApiBearerAuth(),
       ApiOperation({
         summary: 'Get feedback by ID',
-        description: 'Returns feedback details with associated categories',
+        description: 'Returns feedback details with associated labels',
       }),
       ApiOkResponse({
         description: 'Feedback retrieved successfully',
@@ -65,7 +65,7 @@ export class FeedbackSwagger {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Get all feedbacks for a project',
+        summary: 'Get all feedbacks in a workspace',
         description:
           'Returns paginated list of feedbacks with filtering and search capabilities',
       }),
@@ -83,7 +83,7 @@ export class FeedbackSwagger {
       }),
       ApiResponse({
         status: HttpStatus.FORBIDDEN,
-        description: 'You do not have access to this project',
+        description: 'You do not have access to this workspace',
       }),
     );
   }

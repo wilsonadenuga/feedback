@@ -11,26 +11,27 @@ import { Prisma } from '../../../../generated/client/client';
 export class FeedbackService {
   constructor(private readonly feedbackRepository: FeedbackRepository) {}
 
-  async create(projectId: string, data: CreateFeedbackDto) {
+  async create(authorId: string, data: CreateFeedbackDto) {
     return this.feedbackRepository.create({
       title: data.title,
       description: data.description,
-      customer_id: data.customer_id,
-      customer_email: data.customer_email,
-      customer_name: data.customer_name,
-      customer_meta: data.customer_meta,
-      project: {
+      workspace: {
         connect: {
-          id: projectId,
+          id: data.workspace_id,
         },
       },
-      ...(data.category_ids &&
-        data.category_ids.length > 0 && {
-          categories: {
-            create: data.category_ids.map((category_id: string) => ({
-              category: {
+      author: {
+        connect: {
+          id: authorId,
+        },
+      },
+      ...(data.label_ids &&
+        data.label_ids.length > 0 && {
+          labels: {
+            create: data.label_ids.map((label_id: string) => ({
+              label: {
                 connect: {
-                  id: category_id,
+                  id: label_id,
                 },
               },
             })),
@@ -51,11 +52,11 @@ export class FeedbackService {
 
   async findMany(dto: GetFeedbacksDto) {
     const where = {
-      project_id: dto.project_id,
-      ...(dto.category_id && {
-        categories: {
+      workspace_id: dto.workspace_id,
+      ...(dto.label_id && {
+        labels: {
           some: {
-            category_id: dto.category_id,
+            label_id: dto.label_id,
           },
         },
       }),
@@ -64,8 +65,6 @@ export class FeedbackService {
         OR: [
           { title: { contains: dto.search, mode: 'insensitive' } },
           { description: { contains: dto.search, mode: 'insensitive' } },
-          { customer_email: { contains: dto.search, mode: 'insensitive' } },
-          { customer_name: { contains: dto.search, mode: 'insensitive' } },
         ],
       }),
     } satisfies Prisma.FeedbackWhereInput;

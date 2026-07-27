@@ -43,7 +43,7 @@ export class WorkspaceSwagger {
       ApiOperation({
         summary: 'Get all workspaces for current user',
         description:
-          'Returns all workspaces where the user is either the owner or a member. Each workspace includes a `project_count` property for quick insight into how many projects it contains.',
+          'Returns all workspaces where the user is either the owner or a member. Each workspace includes a `member_count` property.',
       }),
       ApiOkResponse({
         description: 'Workspaces retrieved successfully',

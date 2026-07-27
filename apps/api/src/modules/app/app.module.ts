@@ -11,7 +11,6 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { EmailsModule } from '../email/emails.module';
 import { WorkspaceModule } from '../workspace/workspace.module';
-import { ProjectModule } from '../projects/project.module';
 import { LabelModule } from '../labels/label.module';
 import { FeedbackModule } from '../feedbacks/feedback.module';
 import appConfig from '../../config/app.config';
@@ -51,7 +50,6 @@ import appConfig from '../../config/app.config';
     UserModule,
     EmailsModule,
     WorkspaceModule,
-    ProjectModule,
     LabelModule,
     FeedbackModule,
   ],

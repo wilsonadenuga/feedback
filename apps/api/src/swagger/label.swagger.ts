@@ -19,7 +19,7 @@ export class LabelSwagger {
       ApiOperation({
         summary: 'Create a new label',
         description:
-          'Creates a new label. Provide project_id in the request body.',
+          'Creates a new label. Provide workspace_id in the request body.',
       }),
       ApiOkResponse({
         description: 'Label created successfully',
@@ -122,14 +122,14 @@ export class LabelSwagger {
     return applyDecorators(
       ApiBearerAuth(),
       ApiOperation({
-        summary: 'Get all labels by project',
+        summary: 'Get all labels in a workspace',
         description:
-          'Returns all labels within the specified project. Requires project_id as query parameter.',
+          'Returns all labels within the specified workspace. Requires workspace_id as query parameter.',
       }),
       ApiQuery({
-        name: 'project_id',
+        name: 'workspace_id',
         required: true,
-        description: 'The ID of the project to get labels for',
+        description: 'The ID of the workspace to get labels for',
         type: String,
       }),
       ApiOkResponse({
@@ -138,7 +138,7 @@ export class LabelSwagger {
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
-        description: 'Invalid project_id',
+        description: 'Invalid workspace_id',
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,

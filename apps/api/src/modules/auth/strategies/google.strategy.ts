@@ -2,9 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { UserService } from 'modules/user/services/user.service';
+import { UserService } from '../../user/services/user.service';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
+import { TOKEN_TYPES } from '@feedback/schema';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -60,7 +61,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
       await this.prisma.token.create({
         data: {
-          type: 'refresh_token',
+          type: TOKEN_TYPES.REFRESH,
           value: jwtRefreshToken,
           expires_at: expiresAt,
           user_id: user.id,
