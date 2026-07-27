@@ -8,14 +8,9 @@ export const USER_STATUSES = {
   BANNED: 'BANNED',
 } as const;
 
-export type UserStatus = (typeof USER_STATUSES)[keyof typeof USER_STATUSES];
+export const userStatusSchema = z.enum(USER_STATUSES);
 
-export const userStatusSchema = z.enum([
-  'UNVERIFIED',
-  'ACTIVE',
-  'SUSPENDED',
-  'BANNED',
-]);
+export type UserStatus = z.infer<typeof userStatusSchema>;
 
 export const userSchema = z.object({
   id: uuidSchema,
