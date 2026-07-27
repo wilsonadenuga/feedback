@@ -61,10 +61,25 @@ make prisma-migrate
 - Work runs in short **sprints (Linear Cycles)**. Scope each feature to fit roughly **three days**; if it won't fit, split it into multiple features.
 - **Plan each feature together first**, then document it: agree on scope and approach, write the plan to `docs/sprints/<slug>.md` (versioned with the code and reviewed in the PR), and only then break it into **Linear issues/tasks** that reference that spec.
 - Every branch must map to a **Linear issue** before implementation begins. If no issue exists, ask the user to create one or confirm that Claude should create one.
-- Start every new branch off `develop`, not off `main` or another feature branch.
+- Start every new branch off `develop`, not off `main`. The one exception is a chained task branch (below), which starts off the previous task's branch.
 - Name branches with the **Linear issue ID** and a short slug, keeping a Conventional-Commit type prefix, for example `feat/fee-12-feedback-filters`, `fix/fee-13-auth-redirect`, or `chore/fee-14-prisma-cleanup`. The issue ID must appear in the branch name so Linear auto-links the PR and advances the issue's status. (Replace `fee` with the actual Linear team key.)
-- Default to **one branch/PR per feature**; tasks within the feature become small, single-purpose commits. Only split into per-task branches when a task is independently shippable.
+- Use **one branch and PR per task**, not per feature — smaller PRs are easier to review. A task that builds on the one before it starts off that branch rather than `develop`, so the tasks form a chain.
+- **Every PR still targets `develop`.** Because the branches are chained they have to merge in order, and until a parent lands its child's diff also shows the parent's commits. That collapses on its own as each one merges.
+- **Put the merge order at the top of every chained PR description** — for example "Merge order: 2 of 3 — merge after PR 1", followed by the full list. Without it there is no way to tell from the PR which goes first.
 - Keep the branch focused on the linked issue. If the work expands into a separate concern, create or request a separate Linear issue and branch.
+
+### Issue Status Flow
+- Statuses advance automatically via the GitHub integration. Don't drag cards by hand unless something goes wrong.
+
+| Trigger | Status |
+|---|---|
+| PR opened | In Progress |
+| Review requested, or review activity | In Review |
+| PR merged | Done |
+
+- This only works because the Linear issue ID is in the branch name — another reason the naming rule above matters.
+- `In Review` is in the **Started** category, sitting between In Progress and Done.
+- Board columns are hidden when empty, and the setting is **per view**. If a status looks missing, turn on `Show empty columns` in that view's display options.
 
 ### Planning Significant Changes
 - Before a restructure, architecture change, or multi-file feature, switch to plan mode and present a short plan for approval before writing code.
