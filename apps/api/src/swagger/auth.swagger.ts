@@ -5,7 +5,7 @@ import {
   ConfirmEmailResponseDto,
   ResendVerificationResponseDto,
   GoogleAuthResponseDto,
-} from 'modules/auth/dto';
+} from '../modules/auth/dto';
 
 export class AuthSwagger {
   static register() {

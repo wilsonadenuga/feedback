@@ -26,14 +26,16 @@ export class LabelController {
   @Post()
   @LabelSwagger.create()
   async create(@Body() dto: CreateLabelDto) {
-    const label = await this.labelService.create(dto.project_id, dto);
+    const label = await this.labelService.create(dto.workspace_id, dto);
     return ResponseHelper.success(label, 'Label created successfully');
   }
 
   @Get()
   @LabelSwagger.findAll()
   async findAll(@Query() query: GetLabelsQueryDto) {
-    const labels = await this.labelService.findByProjectId(query.project_id);
+    const labels = await this.labelService.findByWorkspaceId(
+      query.workspace_id,
+    );
     return ResponseHelper.success(labels, 'Labels retrieved successfully');
   }
 

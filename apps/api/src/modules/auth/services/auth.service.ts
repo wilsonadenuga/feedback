@@ -21,7 +21,7 @@ import {
   LoginDto,
   LoginVerifyDto,
 } from '../dto';
-import { USER_STATUSES } from '@feedback/schema';
+import { USER_STATUSES, TOKEN_TYPES } from '@feedback/schema';
 import * as crypto from 'crypto';
 import { UserRegisteredEvent } from '../events/user-registered.event';
 import { UserLoginCodeEvent } from '../events/user-login-code.event';
@@ -149,7 +149,7 @@ export class AuthService {
 
     await this.prisma.token.create({
       data: {
-        type: 'refresh_token',
+        type: TOKEN_TYPES.REFRESH,
         value: refreshToken,
         expires_at: new Date(Date.now() + refreshTokenExpiresIn * 1000),
         user_id: userId,

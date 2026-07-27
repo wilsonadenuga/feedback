@@ -17,6 +17,7 @@ export class WorkspaceService {
 
     const createData = {
       name: data.name,
+      slug: generateSlug(data.name),
       logo_url: data.logo_url,
       owner: {
         connect: {
@@ -29,18 +30,15 @@ export class WorkspaceService {
           role: WORKSPACE_ROLES.OWNER,
         },
       },
-      projects: {
-        create: {
-          name: 'Default Project',
-          description: 'Your first project',
-          labels: {
-            create: defaultLabels.map((name) => ({
-              name,
-              slug: generateSlug(name),
-              is_default: true,
-            })),
-          },
-        },
+      settings: {
+        create: {},
+      },
+      labels: {
+        create: defaultLabels.map((name) => ({
+          name,
+          slug: generateSlug(name),
+          is_default: true,
+        })),
       },
     };
 
@@ -58,7 +56,6 @@ export class WorkspaceService {
       const { _count, ...rest } = ws;
       return {
         ...rest,
-        project_count: _count.projects ?? 0,
         member_count: _count?.members ?? 0,
       };
     });
@@ -72,11 +69,10 @@ export class WorkspaceService {
     }
     
      const { _count, ...rest } = workspace;
-      return {
-        ...rest,
-        project_count: _count.projects ?? 0,
-        member_count: _count?.members ?? 0 
-      };
+    return {
+      ...rest,
+      member_count: _count?.members ?? 0,
+    };
   }
 
   async update(workspaceId: string, data: UpdateWorkspaceDto) {

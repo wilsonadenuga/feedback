@@ -6,7 +6,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { TOKEN_TYPES } from '@feedback/schema';
+import { TOKEN_TYPES, WorkspaceRole } from '@feedback/schema';
 import { WorkspaceInviteRepository } from '../repositories/workspace-invite.repository';
 import { WorkspaceMemberRepository } from '../repositories/workspace-member.repository';
 import { TokenService } from '../../token/token.service';
@@ -138,7 +138,7 @@ export class WorkspaceInviteService {
       user: {
         connect: { id: user.id },
       },
-      role: invite.role as 'admin' | 'member' | 'viewer',
+      role: invite.role as WorkspaceRole,
       display_name: displayName,
     });
 

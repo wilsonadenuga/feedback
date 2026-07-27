@@ -7,16 +7,16 @@ import { generateSlug } from '../../../common/helpers';
 export class LabelService {
   constructor(private readonly labelRepository: LabelRepository) {}
 
-  async create(projectId: string, data: CreateLabelDto) {
+  async create(workspaceId: string, data: CreateLabelDto) {
     return this.labelRepository.create({
       name: data.name,
       slug: generateSlug(data.name),
       description: data.description,
       color: data.color,
       is_default: false,
-      project: {
+      workspace: {
         connect: {
-          id: projectId,
+          id: workspaceId,
         },
       },
     });
@@ -57,7 +57,7 @@ export class LabelService {
     await this.labelRepository.delete(labelId);
   }
 
-  async findByProjectId(projectId: string) {
-    return this.labelRepository.findByProjectId(projectId);
+  async findByWorkspaceId(workspaceId: string) {
+    return this.labelRepository.findByWorkspaceId(workspaceId);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { Prisma } from '../../../../generated/client/browser';
+import { Prisma } from '../../../../generated/client/client';
 
 @Injectable()
 export class WorkspaceRepository {
@@ -21,7 +21,7 @@ export class WorkspaceRepository {
     return this.prisma.workspace.findUnique({
       where: { id },
       include: {
-        projects: true,
+        settings: true,
         members: {
           select: {
             id: true,
@@ -38,7 +38,7 @@ export class WorkspaceRepository {
           },
         },
         _count: {
-          select: { projects: true,  members: true },
+          select: { members: true },
         },
       },
     });
@@ -52,7 +52,7 @@ export class WorkspaceRepository {
       orderBy: { created_at: 'desc' },
       include: {
         _count: {
-          select: { projects: true, members: true }
+          select: { members: true },
         },
       },
     });

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { Prisma } from '../../../../generated/client/browser';
+import { Prisma } from '../../../../generated/client/client';
+import { FeedbackStatus } from '@feedback/schema';
 
 @Injectable()
 export class FeedbackRepository {
@@ -42,7 +43,7 @@ export class FeedbackRepository {
             },
           },
         },
-        project: true,
+        workspace: true,
       },
     });
   }
@@ -83,10 +84,10 @@ export class FeedbackRepository {
     };
   }
 
-  async updateStatus(id: string, status: string) {
+  async updateStatus(id: string, status: FeedbackStatus) {
     return this.prisma.feedback.update({
       where: { id },
-      data: { status },
+      data: { status, status_changed_at: new Date() },
       include: {
         labels: {
           include: {
@@ -100,7 +101,7 @@ export class FeedbackRepository {
             },
           },
         },
-        project: true,
+        workspace: true,
       },
     });
   }

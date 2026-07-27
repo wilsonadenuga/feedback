@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { Prisma } from '../../../../generated/client/browser';
+import { Prisma } from '../../../../generated/client/client';
 
 @Injectable()
 export class LabelRepository {
@@ -18,10 +18,10 @@ export class LabelRepository {
     });
   }
 
-  async findByProjectId(projectId: string) {
+  async findByWorkspaceId(workspaceId: string) {
     return this.prisma.label.findMany({
       where: {
-        project_id: projectId,
+        workspace_id: workspaceId,
       },
       orderBy: { created_at: 'desc' },
     });
@@ -40,11 +40,11 @@ export class LabelRepository {
     });
   }
 
-  async findByIdAndProject(labelId: string, projectId: string) {
+  async findByIdAndWorkspace(labelId: string, workspaceId: string) {
     return this.prisma.label.findFirst({
       where: {
         id: labelId,
-        project_id: projectId,
+        workspace_id: workspaceId,
       },
     });
   }

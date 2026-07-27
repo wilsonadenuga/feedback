@@ -17,6 +17,7 @@ import {
 } from '../dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ResponseHelper, createPaginationMeta } from '../../../common/helpers';
+import { GetCurrentUser } from '../../../common/decorators/get-current-user.decorator';
 import { FeedbackSwagger } from '../../../swagger/feedback.swagger';
 
 @ApiTags('feedbacks')
@@ -28,8 +29,11 @@ export class FeedbackController {
 
   @Post()
   @FeedbackSwagger.create()
-  async create(@Body() dto: CreateFeedbackDto) {
-    const feedback = await this.feedbackService.create(dto.project_id, dto);
+  async create(
+    @GetCurrentUser('id') userId: string,
+    @Body() dto: CreateFeedbackDto,
+  ) {
+    const feedback = await this.feedbackService.create(userId, dto);
     return ResponseHelper.success(feedback, 'Feedback created successfully');
   }
 
