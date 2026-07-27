@@ -13,7 +13,6 @@ model User {
   workspace_invites   WorkspaceInvite[]
   tokens              Token[]
   mfa_methods         MfaMethod[]
-  mfa_recovery_codes  MfaRecoveryCode[]
   feedbacks           Feedback[]
   votes               Vote[]
   comments            Comment[]
