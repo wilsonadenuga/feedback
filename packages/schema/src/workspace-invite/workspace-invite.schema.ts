@@ -3,13 +3,23 @@ import { uuidSchema } from '../common';
 import { workspaceRoleSchema } from '../workspace-member/role.schema';
 
 /**
- * Workspace invite status enum
+ * Invite status
  * - PENDING: Invite has been sent and is waiting for acceptance
  * - ACCEPTED: User has accepted the invite
  * - REVOKED: Invite was cancelled by the inviter
  * - EXPIRED: Invite has expired
  */
-export const workspaceInviteStatusEnum = z.enum([
+export const INVITE_STATUSES = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED',
+} as const;
+
+export type InviteStatus =
+  (typeof INVITE_STATUSES)[keyof typeof INVITE_STATUSES];
+
+export const inviteStatusSchema = z.enum([
   'PENDING',
   'ACCEPTED',
   'REVOKED',
@@ -22,10 +32,9 @@ export const workspaceInviteSchema = z.object({
   email: z.string(),
   role: workspaceRoleSchema,
   invited_by_user_id: uuidSchema,
-  status: workspaceInviteStatusEnum,
+  status: inviteStatusSchema,
   created_at: z.string(),
   updated_at: z.string(),
 });
 
 export type WorkspaceInvite = z.infer<typeof workspaceInviteSchema>;
-export type WorkspaceInviteStatus = z.infer<typeof workspaceInviteStatusEnum>;

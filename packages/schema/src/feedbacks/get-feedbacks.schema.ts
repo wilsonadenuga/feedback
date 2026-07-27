@@ -5,13 +5,14 @@ import {
   paginationResponseSchema,
 } from '../common/pagination.schema';
 import { feedbackSchema } from './feedback.schema';
+import { feedbackStatusSchema } from './feedback-status.schema';
 import { uuidSchema } from '../common/uuid.schema';
 
 export const getFeedbacksQuerySchema = paginationQuerySchema.extend({
-  project_id: uuidSchema,
-  category_id: uuidSchema.optional(),
-  status: z.string().optional(),
-  search: z.string().optional(), // Search in title, description, customer fields
+  workspace_id: uuidSchema,
+  label_id: uuidSchema.optional(),
+  status: feedbackStatusSchema.optional(),
+  search: z.string().optional(),
   sort_order: z.enum(['asc', 'desc']).default('desc').optional(),
 });
 

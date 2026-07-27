@@ -3,12 +3,12 @@ import { uuidSchema } from '../common';
 import { successResponseSchema } from '../common/success-response.schema';
 import {
   workspaceInviteSchema,
-  workspaceInviteStatusEnum,
+  inviteStatusSchema,
 } from './workspace-invite.schema';
 
 export const getWorkspaceInvitesQuerySchema = z.object({
   workspace_id: uuidSchema,
-  status: workspaceInviteStatusEnum.optional(),
+  status: inviteStatusSchema.optional(),
 });
 
 export const getWorkspaceInvitesResponseSchema = successResponseSchema(

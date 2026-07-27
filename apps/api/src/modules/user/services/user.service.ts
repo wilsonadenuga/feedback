@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserStatusType } from '@feedback/schema';
+import { UserStatus } from '@feedback/schema';
 import { UserRepository } from '../user.repository';
 
 @Injectable()
@@ -21,11 +21,11 @@ export class UserService {
     });
   }
 
-  async updateUserStatus(userId: string, status: UserStatusType) {
+  async updateUserStatus(userId: string, status: UserStatus) {
     return this.userRepository.updateUser(userId, { status: status });
   }
 
-  async createGoogleUser(name: string, email: string, status: UserStatusType) {
+  async createGoogleUser(name: string, email: string, status: UserStatus) {
     return this.userRepository.create({
       name,
       email,
