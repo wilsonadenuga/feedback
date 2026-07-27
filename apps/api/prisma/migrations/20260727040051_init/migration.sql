@@ -74,6 +74,7 @@ DROP TABLE "projects";
 CREATE TABLE "attachments" (
     "id" TEXT NOT NULL,
     "feedback_id" TEXT NOT NULL,
+    "provider" TEXT NOT NULL,
     "storage_key" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "mime_type" TEXT NOT NULL,
