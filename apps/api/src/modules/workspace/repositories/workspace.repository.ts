@@ -1,17 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Prisma } from '../../../../generated/client/client';
+import { WORKSPACE_ROLES } from '@feedback/schema';
+import { CreateWorkspaceDto } from '../dto';
+import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class WorkspaceRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Prisma.WorkspaceCreateInput) {
+  async create(
+    data: CreateWorkspaceDto,
+    ownerId: string,
+    defaultLabels: string[],
+  ) {
     return this.prisma.workspace.create({
-      data,
+      data: {
+        name: data.name,
+        handle: data.handle,
+        logo_url: data.logo_url,
+        owner: {
+          connect: { id: ownerId },
+        },
+        members: {
+          create: {
+            user_id: ownerId,
+            role: WORKSPACE_ROLES.OWNER,
+          },
+        },
+        settings: {
+          create: {},
+        },
+        labels: {
+          create: defaultLabels.map((name) => ({
+            name,
+            slug: generateSlug(name),
+            is_default: true,
+          })),
+        },
+      },
       include: {
         _count: {
-          select: { members: true},
+          select: { members: true },
         },
       },
     });

@@ -1,9 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WorkspaceRepository } from '../repositories/workspace.repository';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
-import { WORKSPACE_ROLES } from '@feedback/schema';
-import { generateSlug } from '../../../common/helpers';
+import { Prisma } from '../../../../generated/client/client';
+
+/** P2002 is a unique-constraint violation — match the handle's constraint, not the labels' slug. */
+function isHandleTaken(error: unknown) {
+  if (!(error instanceof Prisma.PrismaClientKnownRequestError)) return false;
+  if (error.code !== 'P2002') return false;
+
+  const target = error.meta?.target;
+  return Array.isArray(target) && target.length === 1 && target[0] === 'handle';
+}
 
 @Injectable()
 export class WorkspaceService {
@@ -15,39 +27,23 @@ export class WorkspaceService {
   async create(userId: string, data: CreateWorkspaceDto) {
     const defaultLabels = this.configService.get<string[]>('labels.defaults');
 
-    const createData = {
-      name: data.name,
-      slug: generateSlug(data.name),
-      logo_url: data.logo_url,
-      owner: {
-        connect: {
-          id: userId,
-        },
-      },
-      members: {
-        create: {
-          user_id: userId,
-          role: WORKSPACE_ROLES.OWNER,
-        },
-      },
-      settings: {
-        create: {},
-      },
-      labels: {
-        create: defaultLabels.map((name) => ({
-          name,
-          slug: generateSlug(name),
-          is_default: true,
-        })),
-      },
-    };
+    try {
+      const workspace = await this.workspaceRepository.create(
+        data,
+        userId,
+        defaultLabels,
+      );
 
-    const workspace = await this.workspaceRepository.create(createData);
-    if (workspace) {
       const { _count, ...rest } = workspace;
       return { ...rest, member_count: _count?.members ?? 0 };
+    } catch (error) {
+      if (isHandleTaken(error)) {
+        throw new ConflictException(
+          `The workspace address "${data.handle}" is already taken.`,
+        );
+      }
+      throw error;
     }
-    return workspace;
   }
 
   async findAll(userId: string) {
@@ -67,8 +63,8 @@ export class WorkspaceService {
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-    
-     const { _count, ...rest } = workspace;
+
+    const { _count, ...rest } = workspace;
     return {
       ...rest,
       member_count: _count?.members ?? 0,

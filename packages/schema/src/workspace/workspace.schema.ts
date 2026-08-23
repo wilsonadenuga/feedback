@@ -3,7 +3,7 @@ import { uuidSchema } from '../common';
 
 export const workspaceSchema = z.object({
   id: uuidSchema,
-  slug: z.string(),
+  handle: z.string(),
   name: z.string(),
   owner_user_id: uuidSchema,
   logo_url: z.string().nullable(),

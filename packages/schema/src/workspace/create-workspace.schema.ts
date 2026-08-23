@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { workspaceSchema } from './workspace.schema';
+import { workspaceHandleSchema } from './workspace-handle.schema';
 import { successResponseSchema } from '../common/success-response.schema';
 
 export const createWorkspaceSchema = z.object({
@@ -8,6 +9,7 @@ export const createWorkspaceSchema = z.object({
     .min(1, 'Workspace name is required')
     .max(100, 'Workspace name must not exceed 100 characters')
     .trim(),
+  handle: workspaceHandleSchema,
   logo_url: z.url('Invalid logo URL').optional(),
 });
 
