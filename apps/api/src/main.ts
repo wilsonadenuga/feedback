@@ -4,7 +4,11 @@ import { AppModule } from './modules/app/app.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { ResponseInterceptor, HttpExceptionFilter } from './common';
+import {
+  ResponseInterceptor,
+  HttpExceptionFilter,
+  PrismaExceptionFilter,
+} from './common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +31,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ZodValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // Nest checks the last filter first, so the Prisma filter has to follow the
+  // catch-all to get a look at Prisma errors before it does.
+  app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Feedback API')

@@ -88,7 +88,8 @@ export class WorkspaceSwagger {
       ApiBearerAuth(),
       ApiOperation({
         summary: 'Update workspace',
-        description: 'Updates workspace name and/or logo',
+        description:
+          "Updates the workspace name, logo and/or `handle`. Changing the `handle` changes the board's public address and frees the previous one.",
       }),
       ApiOkResponse({
         description: 'Workspace updated successfully',
@@ -96,7 +97,12 @@ export class WorkspaceSwagger {
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
-        description: 'Validation error',
+        description:
+          'Validation error — including a malformed or reserved `handle`',
+      }),
+      ApiResponse({
+        status: HttpStatus.CONFLICT,
+        description: 'The requested `handle` is already taken',
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,

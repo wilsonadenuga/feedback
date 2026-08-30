@@ -6,15 +6,12 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { WorkspaceRepository } from '../repositories/workspace.repository';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
-import { Prisma } from '../../../../generated/client/client';
+import { violatesUnique } from '../../../prisma/unique-constraint';
 
-/** P2002 is a unique-constraint violation — match the handle's constraint, not the labels' slug. */
-function isHandleTaken(error: unknown) {
-  if (!(error instanceof Prisma.PrismaClientKnownRequestError)) return false;
-  if (error.code !== 'P2002') return false;
-
-  const target = error.meta?.target;
-  return Array.isArray(target) && target.length === 1 && target[0] === 'handle';
+function handleTakenError(handle: string) {
+  return new ConflictException(
+    `The workspace address "${handle}" is already taken.`,
+  );
 }
 
 @Injectable()
@@ -37,10 +34,8 @@ export class WorkspaceService {
       const { _count, ...rest } = workspace;
       return { ...rest, member_count: _count?.members ?? 0 };
     } catch (error) {
-      if (isHandleTaken(error)) {
-        throw new ConflictException(
-          `The workspace address "${data.handle}" is already taken.`,
-        );
+      if (violatesUnique(error, 'handle')) {
+        throw handleTakenError(data.handle);
       }
       throw error;
     }
@@ -78,12 +73,21 @@ export class WorkspaceService {
       throw new NotFoundException('Workspace not found');
     }
 
-    const updated = await this.workspaceRepository.update(workspaceId, {
-      name: data.name,
-      logo_url: data.logo_url,
-    });
-    const { _count, ...rest } = updated;
-    return { ...rest, member_count: _count?.members ?? 0 };
+    try {
+      const updated = await this.workspaceRepository.update(workspaceId, {
+        name: data.name,
+        handle: data.handle,
+        logo_url: data.logo_url,
+      });
+
+      const { _count, ...rest } = updated;
+      return { ...rest, member_count: _count?.members ?? 0 };
+    } catch (error) {
+      if (data.handle && violatesUnique(error, 'handle')) {
+        throw handleTakenError(data.handle);
+      }
+      throw error;
+    }
   }
 
   async delete(workspaceId: string): Promise<void> {
