@@ -100,6 +100,20 @@ make prisma-migrate
 - User-facing changes include empty, loading, error, and success states where applicable.
 - API changes include schema updates, validation, and frontend service updates when needed.
 
+### Validate Before Handing Over
+- After implementing a task, validate it before handing it back. Do not present unreviewed work as finished.
+- Dispatch a subagent to review the change the way a PR reviewer would: correctness, scope creep, missed edge cases, and anything that contradicts this file. Give it the diff and the linked issue so it can check the work against what was actually asked for.
+- Exercise the change for real where it can be run — call the endpoint, run the flow, trigger the error path — rather than relying only on it compiling. Say which paths were exercised and which were not.
+- Report what the review found, including findings that were dismissed and why. Fix what is real before handing over.
+- This is in addition to tests, type checks, lint, and builds, not a replacement for them.
+
+### Comments
+- Do not add a comment unless it is necessary. Default to no comment.
+- Never restate what the code already says. If a comment would only paraphrase the line under it, delete it.
+- Do not label sections of a list, object, or function with comments. If grouping matters, express it in the code.
+- Write a comment only for something the code cannot say on its own: a non-obvious "why", a workaround with a link to the issue it works around, or a constraint that would look like a mistake otherwise.
+- Prefer a clearer name or a small function over a comment that explains confusing code.
+
 ### Naming
 - Use simple, explicit names that communicate purpose.
 - Avoid ambiguous names like `data`, `item`, `temp`, `handleChange`, or `process` unless the scope makes the meaning obvious.
