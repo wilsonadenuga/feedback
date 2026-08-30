@@ -1,4 +1,4 @@
-.PHONY: help install dev build test lint clean prisma-generate prisma-migrate prisma-studio prisma-format prisma-reset resource
+.PHONY: help install dev build test lint clean db-setup prisma-generate prisma-migrate prisma-studio prisma-format prisma-reset resource
 
 # Default target
 help:
@@ -9,6 +9,7 @@ help:
 	@echo "  make test           - Run tests"
 	@echo "  make lint           - Run linters"
 	@echo "  make clean          - Clean build artifacts and node_modules"
+	@echo "  make db-setup        - Point a new empty database at the committed migrations"
 	@echo "  make prisma-generate - Generate Prisma client"
 	@echo "  make prisma-migrate  - Run Prisma migrations"
 	@echo "  make prisma-studio   - Open Prisma Studio"
@@ -43,6 +44,12 @@ clean:
 	rm -rf apps/*/dist
 	rm -rf apps/*/build
 	rm -rf .turbo
+
+db-setup:
+	@echo "Target: $$(grep '^DATABASE_URL' apps/api/.env | sed 's|://[^@]*@|://***@|')"
+	cd apps/api && pnpm exec prisma migrate deploy
+	cd apps/api && pnpm exec prisma generate
+	@echo "Done. The database is empty — register an account to sign in."
 
 # Prisma commands
 prisma-generate:
