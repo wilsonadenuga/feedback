@@ -11,12 +11,6 @@ function readPath(source: unknown, ...path: string[]): unknown {
   }, source);
 }
 
-/**
- * Under a driver adapter, which this app uses, Prisma leaves `meta.target`
- * empty and puts the columns on the driver error instead
- * (https://github.com/prisma/prisma/issues/28953). Both shapes are read so this
- * keeps working when that is fixed.
- */
 export function uniqueConstraintColumns(error: unknown): string[] | null {
   if (!(error instanceof Prisma.PrismaClientKnownRequestError)) return null;
   if (error.code !== 'P2002') return null;
@@ -37,11 +31,6 @@ export function uniqueConstraintColumns(error: unknown): string[] | null {
   return null;
 }
 
-/**
- * Matches on columns because a nested write can violate any of several
- * constraints, and `meta.modelName` reports the top-level model for all of them
- * (https://github.com/prisma/prisma/issues/29595).
- */
 export function violatesUnique(error: unknown, ...columns: string[]): boolean {
   if (columns.length === 0) return false;
 

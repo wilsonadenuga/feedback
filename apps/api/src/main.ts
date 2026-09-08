@@ -31,8 +31,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ZodValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
-  // Nest checks the last filter first, so the Prisma filter has to follow the
-  // catch-all to get a look at Prisma errors before it does.
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
 
   const swaggerConfig = new DocumentBuilder()

@@ -3,7 +3,6 @@ import { PrismaService } from '../../../prisma/prisma.service';
 import { Prisma } from '../../../../generated/client/client';
 import { WORKSPACE_ROLES } from '@feedback/schema';
 import { CreateWorkspaceDto } from '../dto';
-import { generateSlug } from '../../../common/helpers';
 
 @Injectable()
 export class WorkspaceRepository {
@@ -12,7 +11,7 @@ export class WorkspaceRepository {
   async create(
     data: CreateWorkspaceDto,
     ownerId: string,
-    defaultLabels: string[],
+    defaultLabels: { name: string; slug: string; is_default: boolean }[],
   ) {
     return this.prisma.workspace.create({
       data: {
@@ -32,11 +31,7 @@ export class WorkspaceRepository {
           create: {},
         },
         labels: {
-          create: defaultLabels.map((name) => ({
-            name,
-            slug: generateSlug(name),
-            is_default: true,
-          })),
+          create: defaultLabels,
         },
       },
       include: {

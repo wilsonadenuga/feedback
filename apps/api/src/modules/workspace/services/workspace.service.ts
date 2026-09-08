@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { WorkspaceRepository } from '../repositories/workspace.repository';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
 import { violatesUnique } from '../../../prisma/unique-constraint';
+import { generateSlug } from '../../../common/helpers';
 
 function handleTakenError(handle: string) {
   return new ConflictException(
@@ -22,7 +23,13 @@ export class WorkspaceService {
   ) {}
 
   async create(userId: string, data: CreateWorkspaceDto) {
-    const defaultLabels = this.configService.get<string[]>('labels.defaults');
+    const defaultLabels = this.configService
+      .get<string[]>('labels.defaults')
+      .map((name) => ({
+        name,
+        slug: generateSlug(name),
+        is_default: true,
+      }));
 
     try {
       const workspace = await this.workspaceRepository.create(

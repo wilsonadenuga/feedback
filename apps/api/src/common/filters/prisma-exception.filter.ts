@@ -7,10 +7,6 @@ import {
 import { Response } from 'express';
 import { Prisma } from '../../../generated/client/client';
 
-/**
- * Without this, Prisma errors reach the catch-all filter, which echoes
- * `exception.message` and puts constraint names in front of the client.
- */
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
