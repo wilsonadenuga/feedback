@@ -1,6 +1,6 @@
 model Workspace {
   id            String   @id @default(uuid())
-  slug          String   @unique
+  handle        String   @unique
   name          String
   owner_user_id String
   logo_url      String?

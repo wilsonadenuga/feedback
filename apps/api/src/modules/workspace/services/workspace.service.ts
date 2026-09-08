@@ -1,9 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WorkspaceRepository } from '../repositories/workspace.repository';
 import { CreateWorkspaceDto, UpdateWorkspaceDto } from '../dto';
-import { WORKSPACE_ROLES } from '@feedback/schema';
+import { violatesUnique } from '../../../prisma/unique-constraint';
 import { generateSlug } from '../../../common/helpers';
+
+function handleTakenError(handle: string) {
+  return new ConflictException(
+    `The workspace address "${handle}" is already taken.`,
+  );
+}
 
 @Injectable()
 export class WorkspaceService {
@@ -13,41 +23,29 @@ export class WorkspaceService {
   ) {}
 
   async create(userId: string, data: CreateWorkspaceDto) {
-    const defaultLabels = this.configService.get<string[]>('labels.defaults');
+    const defaultLabels = this.configService
+      .get<string[]>('labels.defaults')
+      .map((name) => ({
+        name,
+        slug: generateSlug(name),
+        is_default: true,
+      }));
 
-    const createData = {
-      name: data.name,
-      slug: generateSlug(data.name),
-      logo_url: data.logo_url,
-      owner: {
-        connect: {
-          id: userId,
-        },
-      },
-      members: {
-        create: {
-          user_id: userId,
-          role: WORKSPACE_ROLES.OWNER,
-        },
-      },
-      settings: {
-        create: {},
-      },
-      labels: {
-        create: defaultLabels.map((name) => ({
-          name,
-          slug: generateSlug(name),
-          is_default: true,
-        })),
-      },
-    };
+    try {
+      const workspace = await this.workspaceRepository.create(
+        data,
+        userId,
+        defaultLabels,
+      );
 
-    const workspace = await this.workspaceRepository.create(createData);
-    if (workspace) {
       const { _count, ...rest } = workspace;
       return { ...rest, member_count: _count?.members ?? 0 };
+    } catch (error) {
+      if (violatesUnique(error, 'handle')) {
+        throw handleTakenError(data.handle);
+      }
+      throw error;
     }
-    return workspace;
   }
 
   async findAll(userId: string) {
@@ -67,8 +65,8 @@ export class WorkspaceService {
     if (!workspace) {
       throw new NotFoundException('Workspace not found');
     }
-    
-     const { _count, ...rest } = workspace;
+
+    const { _count, ...rest } = workspace;
     return {
       ...rest,
       member_count: _count?.members ?? 0,
@@ -82,12 +80,21 @@ export class WorkspaceService {
       throw new NotFoundException('Workspace not found');
     }
 
-    const updated = await this.workspaceRepository.update(workspaceId, {
-      name: data.name,
-      logo_url: data.logo_url,
-    });
-    const { _count, ...rest } = updated;
-    return { ...rest, member_count: _count?.members ?? 0 };
+    try {
+      const updated = await this.workspaceRepository.update(workspaceId, {
+        name: data.name,
+        handle: data.handle,
+        logo_url: data.logo_url,
+      });
+
+      const { _count, ...rest } = updated;
+      return { ...rest, member_count: _count?.members ?? 0 };
+    } catch (error) {
+      if (data.handle && violatesUnique(error, 'handle')) {
+        throw handleTakenError(data.handle);
+      }
+      throw error;
+    }
   }
 
   async delete(workspaceId: string): Promise<void> {

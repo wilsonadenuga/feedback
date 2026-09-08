@@ -20,7 +20,7 @@ export class WorkspaceSwagger {
       ApiOperation({
         summary: 'Create a new workspace',
         description:
-          'Creates a new workspace and automatically adds the creator as a member with admin role',
+          "Creates a board-ready workspace: the creator becomes its owner, default labels and a settings row are created, and `handle` becomes the board's public address. Choose the `handle` — it is not derived from the name.",
       }),
       ApiOkResponse({
         description: 'Workspace created successfully',
@@ -28,7 +28,12 @@ export class WorkspaceSwagger {
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
-        description: 'Validation error',
+        description:
+          'Validation error — including a malformed or reserved `handle`',
+      }),
+      ApiResponse({
+        status: HttpStatus.CONFLICT,
+        description: 'The requested `handle` is already taken',
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
@@ -48,7 +53,6 @@ export class WorkspaceSwagger {
       ApiOkResponse({
         description: 'Workspaces retrieved successfully',
         type: GetWorkspacesResponseDto,
-       
       }),
       ApiResponse({
         status: HttpStatus.UNAUTHORIZED,
@@ -84,7 +88,8 @@ export class WorkspaceSwagger {
       ApiBearerAuth(),
       ApiOperation({
         summary: 'Update workspace',
-        description: 'Updates workspace name and/or logo',
+        description:
+          "Updates the workspace name, logo and/or `handle`. Changing the `handle` changes the board's public address and frees the previous one.",
       }),
       ApiOkResponse({
         description: 'Workspace updated successfully',
@@ -92,7 +97,12 @@ export class WorkspaceSwagger {
       }),
       ApiResponse({
         status: HttpStatus.BAD_REQUEST,
-        description: 'Validation error',
+        description:
+          'Validation error — including a malformed or reserved `handle`',
+      }),
+      ApiResponse({
+        status: HttpStatus.CONFLICT,
+        description: 'The requested `handle` is already taken',
       }),
       ApiResponse({
         status: HttpStatus.NOT_FOUND,
