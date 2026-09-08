@@ -102,10 +102,30 @@ make prisma-migrate
 
 ### Validate Before Handing Over
 - After implementing a task, validate it before handing it back. Do not present unreviewed work as finished.
-- Dispatch a subagent to review the change the way a PR reviewer would: correctness, scope creep, missed edge cases, and anything that contradicts this file. Give it the diff and the linked issue so it can check the work against what was actually asked for.
+- Have the reviewer (see Agent Roles) review the change the way a PR reviewer would: correctness, scope creep, missed edge cases, and anything that contradicts this file. Give it the diff, the linked issue, and the implementer's report so it can check the work against what was actually asked for.
 - Exercise the change for real where it can be run — call the endpoint, run the flow, trigger the error path — rather than relying only on it compiling. Say which paths were exercised and which were not.
 - Report what the review found, including findings that were dismissed and why. Fix what is real before handing over.
 - This is in addition to tests, type checks, lint, and builds, not a replacement for them.
+
+### Agent Roles
+- Every task passes through three roles. The **planner** writes the sprint spec and the Linear issue. The **implementer** builds one task from them. The **reviewer** checks the diff against them. The planner may also review. The reviewer is never the implementer: a context that did not write the code is the point.
+- Default seats. When a model changes, update this table and the agent definitions in `.claude/agents/`, not the rules.
+
+| Role | Default |
+|---|---|
+| Planner | The session the user is talking to (Fable) |
+| Implementer | The `implementer` agent in `.claude/agents/` (Opus) |
+| Reviewer | The planner, the `reviewer` agent in `.claude/agents/`, or any other tool the user names |
+
+- The user can reassign seats per task: another tool implements and this session reviews, or a second reviewer of their choice runs after the first. Any tool can take a seat because the handoff is only the spec, the Linear issue, and the branch. The Linear issue is the spec when the task has no sprint doc. The dispatch passes the spec by path or content rather than assuming the other seat can find it.
+- The implementer cannot ask the user anything mid-task, so the spec must be decision-complete before handoff: acceptance criteria, the decisions already made and why, and the checks to run. When a question comes up that the spec does not answer, the implementer stops and returns it instead of guessing.
+- The implementer builds only its task. It does not edit the spec, the issue, or this file, and it does not commit: it leaves the changes in the working tree and reports what it built, grouped by build step when the spec has one, which checks it ran, what it exercised for real, and any open questions. The planner makes the commits once the user has approved the messages.
+- The reviewer reads the diff, the spec or issue, and the implementer's report. It re-runs the checks rather than trusting the report, exercises the change where it can be run, and says so where it cannot. It reports findings and fixes nothing.
+- The review loop is bounded. A round is one fix pass by the implementer plus one re-review, and there are at most two. What is still open after that goes to the user with the findings. The planner takes the task over only if the user says so.
+- Seats run in parallel only when they share nothing. Reviewers always can: two reviewers on the same diff at once is the normal way to get a second opinion. Planning research can: several read-only agents exploring the codebase at once. Implementers can only when their tasks are independent, each in its own git worktree on its own branch. Two implementers never share a working tree, and one task is never split between implementers.
+- Parallel implementers still share the local database, Redis, and the API port from `apps/api/.env`. Until each worktree can point at its own database, only one implementer at a time runs the e2e tests or exercises the running API.
+- The planner implements directly when the task is subtle: auth, migrations, concurrency, anything that can lose data.
+- The user approves the commit message, the push, and the PR. Nothing is committed on their behalf before that.
 
 ### Comments
 - Do not add a comment unless it is necessary. Default to no comment.
